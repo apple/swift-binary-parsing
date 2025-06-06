@@ -1,0 +1,15 @@
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+.swiftpm
+.vscode
+.*.sw?
+*.docc-build
+*.vs
+Package.resolved
+xcuserdata
+xcshareddata
+*.trace
+.swift-version
+
