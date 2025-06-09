@@ -108,7 +108,7 @@ extension Optional where Wrapped: Comparable {
     guard lhs <= rhs else { return nil }
     return lhs..<rhs
   }
-  
+
   @inlinable @inline(__always)
   public static func ...? (lhs: Self, rhs: Self) -> ClosedRange<Wrapped>? {
     guard let lhs, let rhs else { return nil }

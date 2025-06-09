@@ -21,7 +21,7 @@ struct OptionatorTests {
     let actualInfix = a +? b
     var actualAssign = a
     actualAssign +?= b
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actualInfix == result)
@@ -31,14 +31,14 @@ struct OptionatorTests {
       #expect(actualAssign == nil)
     }
   }
-  
+
   @Test(arguments: numbers, numbers)
   func subtraction(_ a: Int?, _ b: Int?) {
     let expected = b.flatMap { a?.subtractingReportingOverflow($0) }
     let actualInfix = a -? b
     var actualAssign = a
     actualAssign -?= b
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actualInfix == result)
@@ -55,7 +55,7 @@ struct OptionatorTests {
     let actualInfix = a *? b
     var actualAssign = a
     actualAssign *?= b
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actualInfix == result)
@@ -72,7 +72,7 @@ struct OptionatorTests {
     let actualInfix = a /? b
     var actualAssign = a
     actualAssign /?= b
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actualInfix == result)
@@ -89,7 +89,7 @@ struct OptionatorTests {
     let actualInfix = a %? b
     var actualAssign = a
     actualAssign %?= b
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actualInfix == result)
@@ -104,7 +104,7 @@ struct OptionatorTests {
   func negation(_ a: Int?) {
     let expected = a?.multipliedReportingOverflow(by: -1)
     let actual = -?a
-    
+
     switch expected {
     case (let result, false)?:
       #expect(actual == result)
@@ -118,7 +118,7 @@ struct OptionatorTests {
     let actual = a ..<? b
     switch (a, b) {
     case (let a?, let b?) where a <= b:
-      #expect(actual == a ..< b)
+      #expect(actual == a..<b)
     default:
       #expect(actual == nil)
     }
@@ -129,7 +129,7 @@ struct OptionatorTests {
     let actual = a ...? b
     switch (a, b) {
     case (let a?, let b?) where a <= b:
-      #expect(actual == a ... b)
+      #expect(actual == a...b)
     default:
       #expect(actual == nil)
     }

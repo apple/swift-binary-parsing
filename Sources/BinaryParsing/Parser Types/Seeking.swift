@@ -12,7 +12,9 @@
 extension ParserSpan {
   @inlinable
   @lifetime(copy self)
-  public func seeking(toRange range: ParserRange) throws -> ParserSpan {
+  public func seeking(toRange range: ParserRange)
+    throws(ParsingError) -> ParserSpan
+  {
     var result = self
     try result.seek(toRange: range)
     return result
@@ -20,8 +22,8 @@ extension ParserSpan {
 
   @inlinable
   @lifetime(copy self)
-  public func seeking(toRelativeOffset offset: some FixedWidthInteger) throws
-    -> ParserSpan
+  public func seeking(toRelativeOffset offset: some FixedWidthInteger)
+    throws(ParsingError) -> ParserSpan
   {
     var result = self
     try result.seek(toRelativeOffset: offset)
@@ -30,8 +32,8 @@ extension ParserSpan {
 
   @inlinable
   @lifetime(copy self)
-  public func seeking(toAbsoluteOffset offset: some FixedWidthInteger) throws
-    -> ParserSpan
+  public func seeking(toAbsoluteOffset offset: some FixedWidthInteger)
+    throws(ParsingError) -> ParserSpan
   {
     var result = self
     try result.seek(toAbsoluteOffset: offset)
@@ -40,8 +42,8 @@ extension ParserSpan {
 
   @inlinable
   @lifetime(copy self)
-  public func seeking(toOffsetFromEnd offset: some FixedWidthInteger) throws
-    -> ParserSpan
+  public func seeking(toOffsetFromEnd offset: some FixedWidthInteger)
+    throws(ParsingError) -> ParserSpan
   {
     var result = self
     try result.seek(toOffsetFromEnd: offset)
@@ -52,7 +54,7 @@ extension ParserSpan {
 extension ParserSpan {
   @inlinable
   @lifetime(&self)
-  public mutating func seek(toRange range: ParserRange) throws {
+  public mutating func seek(toRange range: ParserRange) throws(ParsingError) {
     guard (0..._bytes.byteCount).contains(range.lowerBound),
       (0..._bytes.byteCount).contains(range.upperBound)
     else {
@@ -65,7 +67,7 @@ extension ParserSpan {
   @inlinable
   @lifetime(&self)
   public mutating func seek(toRelativeOffset offset: some FixedWidthInteger)
-    throws
+    throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
       (-startPosition...count).contains(offset)
@@ -78,7 +80,7 @@ extension ParserSpan {
   @inlinable
   @lifetime(&self)
   public mutating func seek(toAbsoluteOffset offset: some FixedWidthInteger)
-    throws
+    throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
       (0..._bytes.byteCount).contains(offset)
@@ -92,7 +94,7 @@ extension ParserSpan {
   @inlinable
   @lifetime(&self)
   public mutating func seek(toOffsetFromEnd offset: some FixedWidthInteger)
-    throws
+    throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
       (0..._bytes.byteCount).contains(offset)

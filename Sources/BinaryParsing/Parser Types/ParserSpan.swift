@@ -121,10 +121,10 @@ extension ParserSpan {
   @_alwaysEmitIntoClient
   @inlinable
   @unsafe
-  public func withUnsafeBytes<T>(
-    _ body: (UnsafeRawBufferPointer) throws -> T
-  ) rethrows -> T {
-    try _bytes.withUnsafeBytes { fullBuffer in
+  public func withUnsafeBytes<T, E>(
+    _ body: (UnsafeRawBufferPointer) throws(E) -> T
+  ) throws(E) -> T {
+    try _bytes.withUnsafeBytes { (fullBuffer) throws(E) in
       let buffer = UnsafeRawBufferPointer(
         rebasing: fullBuffer[_lowerBound..<_upperBound])
       return try body(buffer)
@@ -137,7 +137,7 @@ extension ParserSpan {
   @usableFromInline
   internal mutating func _divide(
     atByteOffset count: some FixedWidthInteger
-  ) throws -> ParserSpan {
+  ) throws(ParsingError) -> ParserSpan {
     guard let count = Int(exactly: count), count >= 0 else {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }
@@ -186,9 +186,9 @@ extension ParserSpan {
   /// `atomically` guarantees that the input span isn't modified in that case.
   @inlinable
   @lifetime(&self)
-  public mutating func atomically<T>(_ body: (inout ParserSpan) throws -> T)
-    rethrows -> T
-  {
+  public mutating func atomically<T, E>(
+    _ body: (inout ParserSpan) throws(E) -> T
+  ) throws(E) -> T {
     // Make a mutable copy to perform the work in `body`.
     var copy = self
     let result = try body(&copy)

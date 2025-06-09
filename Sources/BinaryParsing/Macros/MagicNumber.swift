@@ -15,7 +15,7 @@ func _loadAndCheckDirectBytes<
 >(
   parsing input: inout ParserSpan,
   bigEndianValue: T
-) throws {
+) throws(ParsingError) {
   let loadedValue = try T(parsingBigEndian: &input)
   guard loadedValue == bigEndianValue else {
     throw ParsingError(
@@ -29,7 +29,7 @@ func _loadAndCheckDirectBytesByteOrder<
 >(
   parsing input: inout ParserSpan,
   bigEndianValue: T
-) throws -> Endianness {
+) throws(ParsingError) -> Endianness {
   let loadedValue = try T(parsingBigEndian: &input)
   if loadedValue == bigEndianValue {
     return .big

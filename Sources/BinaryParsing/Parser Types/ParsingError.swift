@@ -107,3 +107,9 @@ extension ParsingError: CustomStringConvertible {
   }
 }
 #endif
+
+#if !$Embedded
+public typealias ThrownParsingError = any Error
+#else
+public typealias ThrownParsingError = ParsingError
+#endif

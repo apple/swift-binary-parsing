@@ -12,8 +12,8 @@
 extension ParserSpan {
   @inlinable
   @lifetime(copy self)
-  public mutating func sliceSpan(byteCount: some FixedWidthInteger) throws
-    -> ParserSpan
+  public mutating func sliceSpan(byteCount: some FixedWidthInteger)
+    throws(ParsingError) -> ParserSpan
   {
     guard let byteCount = Int(exactly: byteCount), count >= 0 else {
       throw ParsingError(status: .invalidValue, location: startPosition)
@@ -29,7 +29,7 @@ extension ParserSpan {
   public mutating func sliceSpan(
     objectStride: some FixedWidthInteger,
     objectCount: some FixedWidthInteger
-  ) throws -> ParserSpan {
+  ) throws(ParsingError) -> ParserSpan {
     guard let objectCount = Int(exactly: objectCount),
       let objectStride = Int(exactly: objectStride),
       let byteCount = objectCount *? objectStride,
@@ -45,8 +45,8 @@ extension ParserSpan {
 extension ParserSpan {
   @inlinable
   @lifetime(&self)
-  public mutating func sliceRange(byteCount: some FixedWidthInteger) throws
-    -> ParserRange
+  public mutating func sliceRange(byteCount: some FixedWidthInteger)
+    throws(ParsingError) -> ParserRange
   {
     try sliceSpan(byteCount: byteCount).parserRange
   }
@@ -56,7 +56,7 @@ extension ParserSpan {
   public mutating func sliceRange(
     objectStride: some FixedWidthInteger,
     objectCount: some FixedWidthInteger
-  ) throws -> ParserRange {
+  ) throws(ParsingError) -> ParserRange {
     try sliceSpan(objectStride: objectStride, objectCount: objectCount)
       .parserRange
   }
@@ -66,10 +66,14 @@ extension ParserSpan {
   @inlinable
   @lifetime(copy self)
   @available(macOS 9999, *)
-  public mutating func sliceUTF8Span(byteCount: some FixedWidthInteger) throws
-    -> UTF8Span
+  public mutating func sliceUTF8Span(byteCount: some FixedWidthInteger)
+    throws(ParsingError) -> UTF8Span
   {
     let rawSpan = try sliceSpan(byteCount: byteCount).bytes
-    return try UTF8Span(validating: Span<UInt8>(_bytes: rawSpan))
+    do {
+      return try UTF8Span(validating: Span<UInt8>(_bytes: rawSpan))
+    } catch {
+      throw ParsingError(status: .userError, location: startPosition)
+    }
   }
 }

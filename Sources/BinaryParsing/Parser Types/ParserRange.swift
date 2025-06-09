@@ -35,7 +35,8 @@ public struct ParserRange: Hashable {
 }
 
 extension ParserRange {
-  public func slicing<C: Collection<UInt8>>(_ coll: C) throws -> C.SubSequence
+  public func slicing<C: Collection<UInt8>>(_ coll: C) throws(ParsingError)
+    -> C.SubSequence
   where C.Index == Int {
     let validRange = coll.startIndex...coll.endIndex
     guard validRange.contains(range.lowerBound),
@@ -49,7 +50,7 @@ extension ParserRange {
 
 extension RandomAccessCollection<UInt8> where Index == Int {
   public subscript(_ range: ParserRange) -> SubSequence {
-    get throws {
+    get throws(ParsingError) {
       let validRange = startIndex...endIndex
       guard validRange.contains(range.lowerBound),
         validRange.contains(range.upperBound)

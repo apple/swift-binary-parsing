@@ -15,8 +15,8 @@ extension Range where Bound: FixedWidthInteger {
   @lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
-    parser: (inout ParserSpan) throws -> Bound
-  ) throws {
+    parser: (inout ParserSpan) throws(ThrownParsingError) -> Bound
+  ) throws(ThrownParsingError) {
     let start = try parser(&input)
     let count = try parser(&input)
     guard count >= 0, let end = start +? count else {
@@ -37,8 +37,8 @@ extension ClosedRange where Bound: FixedWidthInteger {
   @lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
-    parser: (inout ParserSpan) throws -> Bound
-  ) throws {
+    parser: (inout ParserSpan) throws(ThrownParsingError) -> Bound
+  ) throws(ThrownParsingError) {
     let start = try parser(&input)
     let count = try parser(&input)
     guard count > 0, let end = start +? count -? 1 else {
@@ -56,8 +56,8 @@ extension Range {
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
-    boundsParser parser: (inout ParserSpan) throws -> Bound
-  ) throws {
+    boundsParser parser: (inout ParserSpan) throws(ThrownParsingError) -> Bound
+  ) throws(ThrownParsingError) {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {
@@ -73,8 +73,8 @@ extension ClosedRange {
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
-    boundsParser parser: (inout ParserSpan) throws -> Bound
-  ) throws {
+    boundsParser parser: (inout ParserSpan) throws(ThrownParsingError) -> Bound
+  ) throws(ThrownParsingError) {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {

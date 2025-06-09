@@ -12,7 +12,7 @@
 extension Collection {
   @inlinable
   public subscript(throwing i: Index) -> Element {
-    get throws {
+    get throws(ParsingError) {
       guard (startIndex..<endIndex).contains(i) else {
         throw ParsingError(statusOnly: .invalidValue)
       }
@@ -24,7 +24,7 @@ extension Collection {
 extension Optional {
   @inlinable
   public var unwrapped: Wrapped {
-    get throws {
+    get throws(ParsingError) {
       switch self {
       case .some(let v): return v
       case .none:
@@ -36,7 +36,8 @@ extension Optional {
 
 extension BinaryInteger {
   @inlinable
-  public init(throwingOnOverflow other: some BinaryInteger) throws {
+  public init(throwingOnOverflow other: some BinaryInteger) throws(ParsingError)
+  {
     guard let newValue = Self(exactly: other) else {
       throw ParsingError(statusOnly: .invalidValue)
     }
@@ -48,7 +49,9 @@ extension FixedWidthInteger {
   // MARK: Nonmutating arithmetic
 
   @inlinable
-  public func addingThrowingOnOverflow(_ other: Self) throws -> Self {
+  public func addingThrowingOnOverflow(_ other: Self) throws(ParsingError)
+    -> Self
+  {
     let (result, overflow) = addingReportingOverflow(other)
     if overflow {
       throw ParsingError(statusOnly: .invalidValue)
@@ -57,7 +60,9 @@ extension FixedWidthInteger {
   }
 
   @inlinable
-  public func subtractingThrowingOnOverflow(_ other: Self) throws -> Self {
+  public func subtractingThrowingOnOverflow(_ other: Self) throws(ParsingError)
+    -> Self
+  {
     let (result, overflow) = subtractingReportingOverflow(other)
     if overflow {
       throw ParsingError(statusOnly: .invalidValue)
@@ -66,7 +71,9 @@ extension FixedWidthInteger {
   }
 
   @inlinable
-  public func multipliedThrowingOnOverflow(by other: Self) throws -> Self {
+  public func multipliedThrowingOnOverflow(by other: Self) throws(ParsingError)
+    -> Self
+  {
     let (result, overflow) = multipliedReportingOverflow(by: other)
     if overflow {
       throw ParsingError(statusOnly: .invalidValue)
@@ -75,7 +82,9 @@ extension FixedWidthInteger {
   }
 
   @inlinable
-  public func dividedThrowingOnOverflow(by other: Self) throws -> Self {
+  public func dividedThrowingOnOverflow(by other: Self) throws(ParsingError)
+    -> Self
+  {
     let (result, overflow) = dividedReportingOverflow(by: other)
     if overflow {
       throw ParsingError(statusOnly: .invalidValue)
@@ -84,7 +93,8 @@ extension FixedWidthInteger {
   }
 
   @inlinable
-  public func remainderThrowingOnOverflow(dividingBy other: Self) throws -> Self
+  public func remainderThrowingOnOverflow(dividingBy other: Self)
+    throws(ParsingError) -> Self
   {
     let (result, overflow) = remainderReportingOverflow(dividingBy: other)
     if overflow {
@@ -96,28 +106,35 @@ extension FixedWidthInteger {
   // MARK: Mutating arithmetic
 
   @inlinable
-  public mutating func addThrowingOnOverflow(_ other: Self) throws {
+  public mutating func addThrowingOnOverflow(_ other: Self) throws(ParsingError)
+  {
     self = try self.addingThrowingOnOverflow(other)
   }
 
   @inlinable
-  public mutating func subtractThrowingOnOverflow(_ other: Self) throws {
+  public mutating func subtractThrowingOnOverflow(_ other: Self)
+    throws(ParsingError)
+  {
     self = try self.subtractingThrowingOnOverflow(other)
   }
 
   @inlinable
-  public mutating func multiplyThrowingOnOverflow(by other: Self) throws {
+  public mutating func multiplyThrowingOnOverflow(by other: Self)
+    throws(ParsingError)
+  {
     self = try self.multipliedThrowingOnOverflow(by: other)
   }
 
   @inlinable
-  public mutating func divideThrowingOnOverflow(by other: Self) throws {
+  public mutating func divideThrowingOnOverflow(by other: Self)
+    throws(ParsingError)
+  {
     self = try self.dividedThrowingOnOverflow(by: other)
   }
 
   @inlinable
   public mutating func formRemainderThrowingOnOverflow(dividingBy other: Self)
-    throws
+    throws(ParsingError)
   {
     self = try self.remainderThrowingOnOverflow(dividingBy: other)
   }
