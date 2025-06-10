@@ -54,7 +54,7 @@ extension QOI.Header {
 The project includes a variety of example parsers, demonstrating different 
 attributes of binary formats:
 
-- [Binary Property Lists](https://github.com/apple/swift-binary-parsing/blob/main/Examples/BPListParser/BinaryPList.swift.)
+- [Binary Property Lists](https://github.com/apple/swift-binary-parsing/blob/main/Examples/BPListParser/BinaryPList.swift)
 - [ELF](https://github.com/apple/swift-binary-parsing/blob/main/Examples/ELFParser/ELF%2BParsing.swift)
 - [LZ4](https://github.com/apple/swift-binary-parsing/blob/main/Examples/LZ4Parser/LZ4.swift)
 - [PCAP-NG](https://github.com/apple/swift-binary-parsing/blob/main/Examples/PCAPNGParser/PCAPNG.swift)
