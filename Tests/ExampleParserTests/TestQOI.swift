@@ -23,10 +23,10 @@ struct QOITests {
   @Test(arguments: ["tricolor", "antelope"])
   func parseImage(fileName: String) throws {
     let qoi = try #require(Self.getQOIPixels(testFileName: fileName))
-#if canImport(AppKit)
+    #if canImport(AppKit)
     let png = try #require(Self.getPNGPixels(testFileName: fileName))
     #expect(png == qoi)
-#endif
+    #endif
   }
 
   static func getQOIPixels(testFileName: String) -> Data? {
@@ -38,7 +38,7 @@ struct QOITests {
     }.pixels
   }
 
-#if canImport(AppKit)
+  #if canImport(AppKit)
   static func getPNGPixels(testFileName: String) -> Data? {
     guard let imageData = testData(named: "PNG/\(testFileName).png"),
       let image = NSImage(data: imageData)
@@ -55,5 +55,5 @@ struct QOITests {
     }
     return nil
   }
-#endif
+  #endif
 }

@@ -9,12 +9,50 @@
 //
 //===----------------------------------------------------------------------===//
 
+import BinaryParsing
 import Testing
 
-@testable import BinaryParsing
+/// Returns a Boolean value indicating whether two parser spans are identical,
+/// representing the same subregion of the same span of memory.
+func === (lhs: ParserSpan, rhs: ParserSpan) -> Bool {
+  guard lhs.startPosition == rhs.startPosition,
+    lhs.count == rhs.count
+  else { return false }
+
+  return lhs.withUnsafeBytes { lhs in
+    rhs.withUnsafeBytes { rhs in
+      (lhs.baseAddress, lhs.count) == (rhs.baseAddress, rhs.count)
+    }
+  }
+}
 
 /// A basic error type for testing user-thrown errors.
-struct TestError: Error {}
+struct TestError: Error, Equatable {
+  var description: String
+  init(_ description: String = "") {
+    self.description = description
+  }
+}
+
+extension String {
+  /// Run the provided closure on a parser span over the UTF8 contents of this
+  /// string.
+  @discardableResult
+  func withParserSpan<T>(
+    _ body: (inout ParserSpan) throws -> T
+  ) throws -> T {
+    try Array(self.utf8).withParserSpan(body)
+  }
+
+  var utf16Buffer: [UInt8] {
+    var result: [UInt8] = []
+    for codeUnit in self.utf16 {
+      result.append(UInt8(codeUnit & 0xFF))
+      result.append(UInt8(codeUnit >> 8))
+    }
+    return result
+  }
+}
 
 /// The random seed to use for the RNG when "fuzzing", calculated once per
 /// testing session.

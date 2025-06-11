@@ -15,7 +15,7 @@ extension ParserSpan {
   public mutating func sliceSpan(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> ParserSpan
   {
-    guard let byteCount = Int(exactly: byteCount), count >= 0 else {
+    guard let byteCount = Int(exactly: byteCount), byteCount >= 0 else {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }
     guard count >= byteCount else {
@@ -60,18 +60,25 @@ extension ParserSpan {
     try sliceSpan(objectStride: objectStride, objectCount: objectCount)
       .parserRange
   }
+
+  @inlinable
+  @lifetime(&self)
+  public mutating func sliceRemainingRange() -> ParserRange {
+    divide(atOffset: self.count).parserRange
+  }
 }
 
 extension ParserSpan {
   @inlinable
   @lifetime(copy self)
-  @available(macOS 9999, *)
+  @available(macOS 26.0, iOS 26.0, watchOS 26.0, tvOS 26.0, *)
   public mutating func sliceUTF8Span(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> UTF8Span
   {
     let rawSpan = try sliceSpan(byteCount: byteCount).bytes
     do {
-      return try UTF8Span(validating: Span<UInt8>(_bytes: rawSpan))
+      let span = Span<UInt8>(_bytes: rawSpan)
+      return try UTF8Span(validating: span)
     } catch {
       throw ParsingError(status: .userError, location: startPosition)
     }

@@ -97,11 +97,10 @@ extension ParserSpan {
     throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
-      (0..._bytes.byteCount).contains(offset)
+      (0...endPosition).contains(offset)
     else {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }
-    self._lowerBound = _bytes.byteCount &- offset
-    self._upperBound = _bytes.byteCount
+    self._lowerBound = endPosition &- offset
   }
 }

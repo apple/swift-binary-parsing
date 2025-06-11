@@ -12,9 +12,9 @@
 import BinaryParsing
 import Testing
 
-let numbers = [nil, .min, -100, 0, 100, .max]
-
 struct OptionatorTests {
+  static let numbers = [nil, .min, -100, 0, 100, .max]
+
   @Test(arguments: numbers, numbers)
   func addition(_ a: Int?, _ b: Int?) {
     let expected = b.flatMap { a?.addingReportingOverflow($0) }
@@ -132,6 +132,37 @@ struct OptionatorTests {
       #expect(actual == a...b)
     default:
       #expect(actual == nil)
+    }
+  }
+}
+
+struct OptionalOperationsTests {
+  @Test func collectionIfInBounds() throws {
+    let str = "Hello, world!"
+    let substr = str.dropFirst(5).dropLast()
+
+    var i = str.startIndex
+    while true {
+      if substr.indices.contains(i) {
+        #expect(substr[ifInBounds: i] == substr[i])
+      } else {
+        #expect(substr[ifInBounds: i] == nil)
+      }
+      if i == str.endIndex { break }
+      str.formIndex(after: &i)
+    }
+  }
+
+  @Test func collectionRACIfInBounds() throws {
+    let numbers = Array(1...100)
+    let slice = numbers.dropFirst(14).dropLast(20)
+
+    for i in 0...UInt8.max {
+      if slice.indices.contains(Int(i)) {
+        #expect(slice[ifInBounds: i] == slice[Int(i)])
+      } else {
+        #expect(slice[ifInBounds: i] == nil)
+      }
     }
   }
 }

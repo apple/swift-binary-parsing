@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-public struct ParserRange: Hashable {
+public struct ParserRange: Hashable, Sendable {
   @usableFromInline
   internal var range: Range<Int>
 

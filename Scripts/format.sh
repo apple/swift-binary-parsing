@@ -18,3 +18,5 @@ echo "Formatting Swift sources in $(pwd)"
 # Run the format / lint commands
 git ls-files -z '*.swift' | xargs -0 swift format format --parallel --in-place
 git ls-files -z '*.swift' | xargs -0 swift format lint --strict --parallel
+
+sed -i '' 's/borrowbuffer/borrow buffer/g' "Sources/BinaryParsing/Parser Types/ParserSpan.swift"

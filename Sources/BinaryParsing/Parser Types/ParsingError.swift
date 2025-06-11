@@ -94,6 +94,19 @@ extension ParsingError: CustomStringConvertible {
     }
   }
 }
+
+extension ParsingError.Status: CustomStringConvertible {
+  public var description: String {
+    switch self.rawValue {
+    case .insufficientData:
+      "insufficient data"
+    case .invalidValue:
+      "invalid value"
+    case .userError:
+      "user error"
+    }
+  }
+}
 #endif
 
 #if !$Embedded

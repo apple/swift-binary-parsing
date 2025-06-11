@@ -144,12 +144,12 @@ struct IntegerParsingTests {
         let size = T.bitWidth * 2
         let beBadPadding = [UInt8](
           bigEndian: number, paddingTo: size, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsingBigEndian: &$0, byteCount: size)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .big, byteCount: size)
           }
@@ -160,12 +160,12 @@ struct IntegerParsingTests {
         let size = T.bitWidth * 2
         let leBadPadding = [UInt8](
           littleEndian: number, paddingTo: size, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsingLittleEndian: &$0, byteCount: size)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .little, byteCount: size)
           }
@@ -340,12 +340,12 @@ struct IntegerParsingTests {
       do {
         let beBadPadding = [UInt8](
           bigEndian: number, paddingTo: paddedSize, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsingBigEndian: &$0, byteCount: paddedSize)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .big, byteCount: paddedSize)
           }
@@ -355,12 +355,12 @@ struct IntegerParsingTests {
       do {
         let leBadPadding = [UInt8](
           littleEndian: number, paddingTo: paddedSize, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsingLittleEndian: &$0, byteCount: paddedSize)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .little, byteCount: paddedSize)
           }
@@ -476,12 +476,12 @@ struct IntegerParsingTests {
         let size = T.bitWidth * 2
         let beBadPadding = [UInt8](
           bigEndian: number, paddingTo: size, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsingBigEndian: &$0, byteCount: size)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try beBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .big, byteCount: size)
           }
@@ -492,12 +492,12 @@ struct IntegerParsingTests {
         let size = T.bitWidth * 2
         let leBadPadding = [UInt8](
           littleEndian: number, paddingTo: size, withPadding: 0xb0)
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsingLittleEndian: &$0, byteCount: size)
           }
         }
-        #expect(throws: Error.self) {
+        #expect(throws: ParsingError.self) {
           try leBadPadding.withParserSpan {
             try T(parsing: &$0, endianness: .little, byteCount: size)
           }

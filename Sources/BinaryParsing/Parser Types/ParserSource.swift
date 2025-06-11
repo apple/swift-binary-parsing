@@ -122,6 +122,7 @@ extension Data: ParserSpanProvider {
 #endif
 
 extension ParserSpanProvider where Self: RandomAccessCollection<UInt8> {
+  @discardableResult
   @inlinable
   public func withParserSpan<T>(
     _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
