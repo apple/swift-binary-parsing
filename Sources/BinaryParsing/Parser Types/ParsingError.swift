@@ -9,6 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+/// An error produced during parsing.
 public struct ParsingError: Error {
   /// The different kinds of parsing errors.
   public struct Status: Equatable, Sendable {
@@ -24,7 +25,8 @@ public struct ParsingError: Error {
     public static var insufficientData: Self {
       .init(rawValue: .insufficientData)
     }
-    /// Parsing failed due to an invalid parameter passed to a parsing function.
+    /// Parsing failed due to an invalid parsed value (for example, due to
+    /// overflow) or an invalid parameter passed to a parsing function.
     public static var invalidValue: Self {
       .init(rawValue: .invalidValue)
     }
@@ -51,27 +53,14 @@ public struct ParsingError: Error {
   /// The user-provided error associated with this parsing error.
   public var userError: (any Error)?
 
-  @available(*, deprecated)
   @usableFromInline
   init(
     status: Status,
-    location: Int,
-    message: String = "",
+    location: Int? = nil,
     userError: (any Error)? = nil
   ) {
     self.status = status
-    self._location = location
-    self.userError = userError
-  }
-
-  @usableFromInline
-  init(
-    status: Status,
-    location: Int,
-    userError: (any Error)? = nil
-  ) {
-    self.status = status
-    self._location = location
+    self._location = location ?? -1
     self.userError = userError
   }
   #endif
@@ -92,8 +81,7 @@ public struct ParsingError: Error {
 #if !$Embedded
 extension ParsingError {
   public init(userError: any Error) {
-    self = .init(
-      status: .userError, location: -1, userError: userError)
+    self = .init(status: .userError, userError: userError)
   }
 }
 
@@ -109,7 +97,20 @@ extension ParsingError: CustomStringConvertible {
 #endif
 
 #if !$Embedded
+/// An error thrown by the library user.
+///
+/// In a build for non-embedded Swift, `ThrownParsingError` aliases `any Error`,
+/// so you can throw an error of any kind from closures passed to methods that
+/// are designated as `throws(ThrownParsingError)`. When the method throws an
+/// error, it will always be  either your error or an instance of
+/// `ParsingError`.
+///
+/// In a build for embedded Swift, `ThrownParsingError` instead aliases the
+/// specific `ParsingError` type. Because embedded Swift supports only
+/// fully-typed throws, and not the existential `any Error`, this allows you
+/// to still take use error-throwing APIs in an embedded context.
 public typealias ThrownParsingError = any Error
 #else
+// Documentation is built using the non-embedded build.
 public typealias ThrownParsingError = ParsingError
 #endif
