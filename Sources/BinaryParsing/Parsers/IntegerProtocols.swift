@@ -11,14 +11,14 @@
 
 /// A fixed-width integer with a single-byte size.
 ///
-/// Single-byte integers can be loaded directly, and don't have a notion
-/// of alignment or endianness.
+/// Single-byte integers can be loaded directly, and don't have a notion of
+/// alignment or endianness.
 public protocol SingleByteInteger: FixedWidthInteger, BitwiseCopyable {}
 
 /// A fixed-width integer with a size of two or more bytes.
 ///
-/// Multi-byte integers can have both alignment and endianness, and are
-/// always a fixed size in memory.
+/// Multi-byte integers can have both alignment and endianness, and are always
+/// a fixed size in memory.
 public protocol MultiByteInteger: FixedWidthInteger, BitwiseCopyable {}
 
 /// A fixed-width integer with a size that varies by platform.

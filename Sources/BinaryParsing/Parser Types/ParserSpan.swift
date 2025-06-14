@@ -11,7 +11,8 @@
 
 /// A non-owning, non-escaping view for parsing binary data.
 ///
-/// You can access a `ParserSpan` from a
+/// You can access a `ParserSpan` from an array of bytes or a `Data` instance,
+/// or construct one from an existing `RawSpan`.
 public struct ParserSpan: ~Escapable, ~Copyable {
   @usableFromInline
   var _bytes: RawSpan
@@ -21,10 +22,13 @@ public struct ParserSpan: ~Escapable, ~Copyable {
   var _upperBound: Int
 
   /// Creates a parser span over the entire contents of the given raw span.
+  ///
+  /// The resulting `ParserSpan` has a lifetime copied from the raw span
+  /// passed as `bytes`.
   @inlinable
-  @lifetime(copy _bytes)
-  public init(_ _bytes: RawSpan) {
-    self._bytes = _bytes
+  @lifetime(copy bytes)
+  public init(_ bytes: RawSpan) {
+    self._bytes = bytes
     self._lowerBound = 0
     self._upperBound = _bytes.byteCount
   }
@@ -59,6 +63,8 @@ public struct ParserSpan: ~Escapable, ~Copyable {
   }
 
   /// A raw span over the current memory represented by this parser span.
+  ///
+  /// The resulting `RawSpan` has a lifetime copied from this parser span.
   public var bytes: RawSpan {
     @inlinable
     @lifetime(copy self)

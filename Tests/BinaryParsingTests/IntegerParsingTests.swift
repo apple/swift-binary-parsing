@@ -456,8 +456,8 @@ struct IntegerParsingTests {
     }
   }
 
-  /// Performs tests on all the different permutations of integer types
-  /// and storage types.
+  /// Performs tests on all the different permutations of integer types and
+  /// storage types.
   @Test func integerFuzzing() throws {
     var rng = getSeededRNG()
 

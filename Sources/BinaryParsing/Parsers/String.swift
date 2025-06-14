@@ -10,6 +10,10 @@
 //===----------------------------------------------------------------------===//
 
 extension String {
+  /// Parses a nul-terminated UTF-8 string from the start of the given parser.
+  ///
+  /// The bytes of the string and the NUL are all consumed from `input`. This
+  /// initializer throws an error if `input` does not contain a NUL byte.
   @inlinable
   @lifetime(&input)
   public init(parsingNulTerminated input: inout ParserSpan) throws(ParsingError)
@@ -25,22 +29,33 @@ extension String {
     _ = unsafe input.consumeUnchecked()
   }
 
+  /// Parses a UTF-8 string from the entire contents of the given parser.
+  ///
+  /// Unlike most parsers, this initializer does not throw. Any invalid UTF-8
+  /// code units are repaired by replacing with the Unicode replacement
+  /// character `U+FFFD`.
   @inlinable
   @lifetime(&input)
-  public init(parsingUTF8 input: inout ParserSpan) throws(ParsingError) {
+  public init(parsingUTF8 input: inout ParserSpan) {
     let stringBytes = input.divide(at: input.endPosition)
     self = unsafe stringBytes.withUnsafeBytes { buffer in
       unsafe String(decoding: buffer, as: UTF8.self)
     }
   }
 
+  /// Parses a UTF-8 string from the specified number of bytes at the start of
+  /// the given parser.
+  ///
+  /// This initializer throws if `input` doesn't have the number of bytes
+  /// required by `count`. Any invalid UTF-8 code units are repaired by
+  /// replacing with the Unicode replacement character `U+FFFD`.
   @inlinable
   @lifetime(&input)
   public init(parsingUTF8 input: inout ParserSpan, count: Int)
     throws(ParsingError)
   {
     var slice = try input._divide(atByteOffset: count)
-    try self.init(parsingUTF8: &slice)
+    self.init(parsingUTF8: &slice)
   }
 
   @unsafe
@@ -56,6 +71,12 @@ extension String {
     }
   }
 
+  /// Parses a UTF-16 string from the entire contents of the given parser.
+  ///
+  /// This initializer throws if the span has an odd count, and therefore can't
+  /// be interpreted as a series of `UInt16` values. Any invalid UTF-16 code
+  /// units or incomplete surrogate pairs are repaired by replacing with the
+  /// Unicode replacement character `U+FFFD`.
   @inlinable
   @lifetime(&input)
   public init(parsingUTF16 input: inout ParserSpan) throws(ParsingError) {
@@ -65,6 +86,20 @@ extension String {
     unsafe try self.init(_uncheckedParsingUTF16: &input)
   }
 
+  /// Parses a UTF-16 string from the specified number of code units at the
+  /// start of the given parser.
+  ///
+  /// This initializer throws if `input` doesn't have the number of bytes
+  /// required by `codeUnitCount`. Any invalid UTF-16 code units or incomplete
+  /// surrogate pairs are repaired by replacing with the Unicode replacement
+  /// character `U+FFFD`.
+  ///
+  /// - Parameters:
+  ///   - input: The parser span to parse the string from. `input` must have at
+  ///     least `2 * codeUnitCount` bytes remaining.
+  ///   - codeUnitCount: The number of UTF-16 code units to read from `input`.
+  /// - Throws: A `ParsingError` if `input` doesn't have at least
+  ///   `2 * codeUnitCount` bytes remaining.
   @inlinable
   @lifetime(&input)
   public init(parsingUTF16 input: inout ParserSpan, codeUnitCount: Int)

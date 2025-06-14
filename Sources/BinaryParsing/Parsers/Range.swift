@@ -13,6 +13,18 @@
 
 extension Range where Bound: FixedWidthInteger {
   #if !$Embedded
+  /// Creates a new half-open range by parsing the start and count of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and count
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and count.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
@@ -29,6 +41,18 @@ extension Range where Bound: FixedWidthInteger {
   }
   #endif
 
+  /// Creates a new half-open range by parsing the start and count of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and count
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and count.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
@@ -93,6 +117,18 @@ extension ClosedRange where Bound: FixedWidthInteger {
 
 extension Range {
   #if !$Embedded
+  /// Creates a new half-open range by parsing the start and end of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and end
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and end.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
@@ -109,6 +145,18 @@ extension Range {
   }
   #endif
 
+  /// Creates a new half-open range by parsing the start and end of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and end
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and end.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
@@ -127,6 +175,18 @@ extension Range {
 
 extension ClosedRange {
   #if !$Embedded
+  /// Creates a new closed range by parsing the start and end of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and end
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and end.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
@@ -143,6 +203,18 @@ extension ClosedRange {
   }
   #endif
 
+  /// Creates a new closed range by parsing the start and end of the range,
+  /// using the given parser closure for each value.
+  ///
+  /// Use this initializer to parse a range from data when the start and end
+  /// of the range both use the same storage. Alternatively, you can parse
+  /// the two values separately and then use optional operators to safely
+  /// construct the range.
+  ///
+  /// - Parameters:
+  ///   - input: The `ParserSpan` to parse from.
+  ///   - parser: The closure to use when parsing the start and end.
+  /// - Throws: An error if `parser` throws an error.
   @lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,

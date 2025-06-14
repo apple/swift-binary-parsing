@@ -13,6 +13,22 @@
 public import Foundation
 #endif
 
+/// A type that can be parsed from a `ParserSpan`.
+///
+/// Types that conform to `ExpressibleByParsing` automatically receive convenience
+/// initializers that work with `Data`, arrays of bytes, and other common data
+/// sources.
+///
+///     // Conformance:
+///     extension QOI: ExpressibleByParsing {
+///         public init(parsing input: inout ParserSpan) throws {
+///             // Parsing implementation goes here!
+///         }
+///     }
+///
+///     // Usage:
+///     let imageData = try Data(contentsOfFile: ...)
+///     let qoiImage = try QOI(parsing: imageData)
 public protocol ExpressibleByParsing {
   @lifetime(&input)
   init(parsing input: inout ParserSpan) throws(ThrownParsingError)
@@ -44,6 +60,8 @@ extension ExpressibleByParsing {
 }
 
 extension RandomAccessCollection<UInt8> {
+  /// Executes the given closure with a `ParserSpan` over the contents of this
+  /// collection, if such a span is available.
   @inlinable
   public func withParserSpanIfAvailable<T>(
     _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
@@ -76,7 +94,10 @@ extension RandomAccessCollection<UInt8> {
 
 // MARK: ParserSpanProvider
 
+/// A type that provides access to a `ParserSpan`.
 public protocol ParserSpanProvider {
+  /// Executes the given closure with a `ParserSpan` over the contents of this
+  /// type.
   func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T
@@ -84,6 +105,8 @@ public protocol ParserSpanProvider {
 
 extension ParserSpanProvider {
   #if !$Embedded
+  /// Executes the given closure with a `ParserSpan` over the contents of this
+  /// type, consuming the given parser range instead of the full span.
   @_alwaysEmitIntoClient
   @inlinable
   public func withParserSpan<T>(
@@ -98,6 +121,8 @@ extension ParserSpanProvider {
   }
   #endif
 
+  /// Executes the given closure with a `ParserSpan` over the contents of this
+  /// type, consuming the given parser range instead of the full span.
   @_alwaysEmitIntoClient
   @inlinable
   public func withParserSpan<T>(

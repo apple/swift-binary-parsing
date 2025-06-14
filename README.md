@@ -32,7 +32,10 @@ import BinaryParsing
 
 extension QOI.Header {
   init(parsing input: inout ParserSpan) throws {
-    try #magicNumber("qoif", parsing: &input)
+    let magic = try UInt32(parsingBigEndian: &input)
+    guard magic == 0x71_6f_69_66 else {
+      throw QOIError()
+    }
     
     // Loading 'Int' requires a byte count or guaranteed-size storage
     self.width = try Int(parsing: &input, storedAsBigEndian: UInt32.self)

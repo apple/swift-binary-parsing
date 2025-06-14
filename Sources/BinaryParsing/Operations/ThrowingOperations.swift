@@ -10,6 +10,8 @@
 //===----------------------------------------------------------------------===//
 
 extension Collection {
+  /// Returns the element at the given index, throwing an error if the index is
+  /// not in bounds.
   @inlinable
   public subscript(throwing i: Index) -> Element {
     get throws(ParsingError) {
@@ -20,6 +22,8 @@ extension Collection {
     }
   }
   
+  /// Returns the subsequence in the given range, throwing an error if the range
+  /// is not in bounds.
   @inlinable
   public subscript(throwing bounds: Range<Index>) -> SubSequence {
     get throws(ParsingError) {
@@ -31,6 +35,10 @@ extension Collection {
 }
 
 extension Optional {
+  /// The value wrapped by this optional.
+  ///
+  /// If this optional is `nil`, accessing the `unwrapped` property throws an
+  /// error.
   @inlinable
   public var unwrapped: Wrapped {
     get throws(ParsingError) {
@@ -44,6 +52,8 @@ extension Optional {
 }
 
 extension BinaryInteger {
+  /// Creates a new value from the given integer, throwing if the value would
+  /// overflow.
   @inlinable
   public init(throwingOnOverflow other: some BinaryInteger) throws(ParsingError)
   {
@@ -57,6 +67,8 @@ extension BinaryInteger {
 extension FixedWidthInteger {
   // MARK: Nonmutating arithmetic
 
+  /// Returns the sum of this value and the given value, throwing an error if
+  /// overflow occurrs.
   @inlinable
   public func addingThrowingOnOverflow(_ other: Self) throws(ParsingError)
     -> Self
@@ -68,6 +80,8 @@ extension FixedWidthInteger {
     return result
   }
 
+  /// Returns the difference obtained by subtracting the given value from this
+  /// value, throwing an error if overflow occurrs.
   @inlinable
   public func subtractingThrowingOnOverflow(_ other: Self) throws(ParsingError)
     -> Self
@@ -79,6 +93,8 @@ extension FixedWidthInteger {
     return result
   }
 
+  /// Returns the product of this value and the given value, throwing an error
+  /// if overflow occurrs.
   @inlinable
   public func multipliedThrowingOnOverflow(by other: Self) throws(ParsingError)
     -> Self
@@ -90,6 +106,8 @@ extension FixedWidthInteger {
     return result
   }
 
+  /// Returns the quotient obtained by dividing this value by the given value,
+  /// throwing an error if overflow occurrs.
   @inlinable
   public func dividedThrowingOnOverflow(by other: Self) throws(ParsingError)
     -> Self
@@ -101,6 +119,8 @@ extension FixedWidthInteger {
     return result
   }
 
+  /// Returns the remainder after dividing this value by the given value,
+  /// throwing an error if overflow occurrs.
   @inlinable
   public func remainderThrowingOnOverflow(dividingBy other: Self)
     throws(ParsingError) -> Self
@@ -114,12 +134,16 @@ extension FixedWidthInteger {
 
   // MARK: Mutating arithmetic
 
+  /// Adds the given value to this value, throwing an error if overflow
+  /// occurrs.
   @inlinable
   public mutating func addThrowingOnOverflow(_ other: Self) throws(ParsingError)
   {
     self = try self.addingThrowingOnOverflow(other)
   }
 
+  /// Subtracts the given value from this value, throwing an error if overflow
+  /// occurrs.
   @inlinable
   public mutating func subtractThrowingOnOverflow(_ other: Self)
     throws(ParsingError)
@@ -127,6 +151,8 @@ extension FixedWidthInteger {
     self = try self.subtractingThrowingOnOverflow(other)
   }
 
+  /// Multiplies this value by the given value, throwing an error if overflow
+  /// occurrs.
   @inlinable
   public mutating func multiplyThrowingOnOverflow(by other: Self)
     throws(ParsingError)
@@ -134,6 +160,8 @@ extension FixedWidthInteger {
     self = try self.multipliedThrowingOnOverflow(by: other)
   }
 
+  /// Divides this value by the given value, throwing an error if overflow
+  /// occurrs.
   @inlinable
   public mutating func divideThrowingOnOverflow(by other: Self)
     throws(ParsingError)
@@ -141,6 +169,8 @@ extension FixedWidthInteger {
     self = try self.dividedThrowingOnOverflow(by: other)
   }
 
+  /// Replacees this value with the remainder of dividing by the given value,
+  /// throwing an error if overflow occurrs.
   @inlinable
   public mutating func formRemainderThrowingOnOverflow(dividingBy other: Self)
     throws(ParsingError)

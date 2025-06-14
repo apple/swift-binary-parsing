@@ -53,11 +53,11 @@ extension KeyPathExprSyntax {
   /// For example, if `typeName` is `"Foo"` and this key path expression is
   /// `\Foo.bar.baz`, this method returns `["bar", "baz"]`.
   ///
-  /// Since nested types aren't distinguished from property names in the syntax,
-  /// type names may be returned from this function. For example, in the key
-  /// path expression `\Int.Magnitude.bitWidth`, the first key path component
-  /// is the type name `Magnitude`, but calling this function with a `typeName`
-  /// of `"Int"` will yield `["Magnitude", "bitWidth"]`.
+  /// Since nested types aren't distinguished from property names in the
+  /// syntax, type names may be returned from this function. For example, in
+  /// the key path expression `\Int.Magnitude.bitWidth`, the first key path
+  /// component is the type name `Magnitude`, but calling this function with a
+  /// `typeName` of `"Int"` will yield `["Magnitude", "bitWidth"]`.
   func propertyNames(afterTypeName typeName: String) -> [String]? {
     // Break apart the type name (e.g. `Foo.Bar` -> [Foo, Bar]) and match the root
     let typeNameParts = typeName.split(separator: ".")
