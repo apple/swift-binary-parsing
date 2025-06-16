@@ -19,6 +19,15 @@ extension Collection {
       return self[i]
     }
   }
+  
+  @inlinable
+  public subscript(throwing bounds: Range<Index>) -> SubSequence {
+    get throws(ParsingError) {
+      guard bounds.lowerBound >= startIndex && bounds.upperBound <= endIndex
+      else { throw ParsingError(statusOnly: .invalidValue) }
+      return self[bounds]
+    }
+  }
 }
 
 extension Optional {

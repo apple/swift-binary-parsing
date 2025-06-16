@@ -140,28 +140,47 @@ struct OptionalOperationsTests {
   @Test func collectionIfInBounds() throws {
     let str = "Hello, world!"
     let substr = str.dropFirst(5).dropLast()
-
-    var i = str.startIndex
-    while true {
-      if substr.indices.contains(i) {
+    let allIndices = str.indices + [str.endIndex]
+    let validIndices = substr.startIndex..<substr.endIndex
+    let validBounds = substr.startIndex...substr.endIndex
+    
+    for low in allIndices.indices {
+      let i = allIndices[low]
+      if validIndices.contains(i) {
         #expect(substr[ifInBounds: i] == substr[i])
       } else {
         #expect(substr[ifInBounds: i] == nil)
       }
-      if i == str.endIndex { break }
-      str.formIndex(after: &i)
+      
+      for high in allIndices[low...].indices {
+        let j = allIndices[high]
+        if validBounds.contains(i) && validBounds.contains(j) {
+          #expect(substr[ifInBounds: i..<j] == substr[i..<j])
+        } else {
+          #expect(substr[ifInBounds: i..<j] == nil)
+        }
+      }
     }
   }
 
   @Test func collectionRACIfInBounds() throws {
     let numbers = Array(1...100)
     let slice = numbers.dropFirst(14).dropLast(20)
-
+    let validBounds = UInt8(slice.startIndex)...UInt8(slice.endIndex)
+    
     for i in 0...UInt8.max {
       if slice.indices.contains(Int(i)) {
         #expect(slice[ifInBounds: i] == slice[Int(i)])
       } else {
         #expect(slice[ifInBounds: i] == nil)
+      }
+      
+      for j in i...UInt8.max {
+        if validBounds.contains(i) && validBounds.contains(j) {
+          #expect(slice[ifInBounds: i..<j] == slice[Int(i)..<Int(j)])
+        } else {
+          #expect(slice[ifInBounds: i..<j] == nil)
+        }
       }
     }
   }

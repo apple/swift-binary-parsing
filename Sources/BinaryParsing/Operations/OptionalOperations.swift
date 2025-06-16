@@ -17,6 +17,14 @@ extension Collection {
     }
     return self[i]
   }
+  
+  @inlinable
+  public subscript(ifInBounds range: Range<Index>) -> SubSequence? {
+    let bounds = startIndex...endIndex
+    guard range.lowerBound >= startIndex, range.upperBound <= endIndex
+    else { return nil }
+    return self[range]
+  }
 }
 
 extension Collection where Index == Int {
@@ -26,5 +34,15 @@ extension Collection where Index == Int {
       return nil
     }
     return self[i]
+  }
+  
+  @_alwaysEmitIntoClient
+  public subscript<T: FixedWidthInteger>(ifInBounds bounds: Range<T>) -> SubSequence? {
+    guard let low = Int(exactly: bounds.lowerBound),
+          let high = Int(exactly: bounds.upperBound),
+          low >= startIndex, high <= endIndex else {
+      return nil
+    }
+    return self[low..<high]
   }
 }
