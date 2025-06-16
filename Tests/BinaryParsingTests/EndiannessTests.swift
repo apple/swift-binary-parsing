@@ -9,28 +9,17 @@
 //
 //===----------------------------------------------------------------------===//
 
-public struct Endianness: Hashable {
-  var _isBigEndian: Bool
+import BinaryParsing
+import Testing
 
-  public init(isBigEndian: Bool) {
-    self._isBigEndian = isBigEndian
-  }
-}
-
-extension Endianness {
-  public static var big: Endianness {
-    self.init(isBigEndian: true)
-  }
-
-  public static var little: Endianness {
-    self.init(isBigEndian: false)
-  }
-
-  public var isBigEndian: Bool {
-    _isBigEndian
-  }
-  
-  public var isLittleEndian: Bool {
-    !_isBigEndian
+struct EndiannessTests {
+  @Test(arguments: [false, true])
+  func endianness(isBigEndian: Bool) {
+    let endianness = Endianness(isBigEndian: isBigEndian)
+    #expect(endianness.isBigEndian == isBigEndian)
+    #expect(endianness.isLittleEndian == !isBigEndian)
+    
+    let endianness2: Endianness = isBigEndian ? .big : .little
+    #expect(endianness == endianness2)
   }
 }
