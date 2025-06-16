@@ -70,7 +70,7 @@ extension ParserSpan {
     throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
-      (-startPosition...count).contains(offset)
+      (0...count).contains(offset)
     else {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }
@@ -97,7 +97,7 @@ extension ParserSpan {
     throws(ParsingError)
   {
     guard let offset = Int(exactly: offset),
-      (0...endPosition).contains(offset)
+      (0...count).contains(offset)
     else {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }

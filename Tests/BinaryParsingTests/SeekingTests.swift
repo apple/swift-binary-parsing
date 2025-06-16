@@ -105,9 +105,9 @@ struct SeekingTests {
       let doubleOffsetValue = try Int16(parsingBigEndian: &input)
       #expect(doubleOffsetValue == 4)
       #expect(input.startPosition == 8)
+    }
 
-      // Start over
-      try input.seek(toRelativeOffset: -8)
+    try buffer.withParserSpan { input in
       let fourValues = try Array(
         parsing: &input,
         count: 4,
@@ -118,11 +118,14 @@ struct SeekingTests {
       // Seek to end
       try input.seek(toRelativeOffset: 8)
       #expect(input.count == 0)
-      try input.seek(toRelativeOffset: -8)
+    }
 
-      // Can't seek past endpoints
+    try buffer.withParserSpan { input in
+      try input.seek(toRelativeOffset: 8)
+
+      // Can't seek backwards
       #expect(throws: ParsingError.self) {
-        try input.seek(toRelativeOffset: -9)
+        try input.seek(toRelativeOffset: -1)
       }
       #expect(input.startPosition == 8)
       #expect(throws: ParsingError.self) {
@@ -155,11 +158,6 @@ struct SeekingTests {
       #expect(value1 == 7)
       #expect(input.count == 2)
 
-      try input.seek(toOffsetFromEnd: 16)
-      let value2 = try Int16(parsingBigEndian: &input)
-      #expect(value2 == 1)
-      #expect(input.count == 14)
-
       // Can't seek past endpoints
       #expect(throws: ParsingError.self) {
         try input.seek(toOffsetFromEnd: -1)
@@ -184,10 +182,10 @@ struct SeekingTests {
       #expect(chunk.startPosition == 8)
       #expect(chunk.endPosition == 12)
       #expect(throws: ParsingError.self) {
-        try chunk.seek(toOffsetFromEnd: 13)
+        try chunk.seek(toOffsetFromEnd: 5)
       }
-      try chunk.seek(toOffsetFromEnd: 12)
-      #expect(chunk.count == 12)
+      try chunk.seek(toOffsetFromEnd: 4)
+      #expect(chunk.count == 4)
     }
   }
 
