@@ -31,11 +31,18 @@ struct RangeParsingTests {
       #expect(range2 == 3..<7)
     }
 
-    _ = try buffer.withParserSpan { span in
+    buffer.withParserSpan { span in
       // Negative count
       #expect(throws: ParsingError.self) {
         try Range(parsingStartAndCount: &span) { span in
           try -(Int16(parsingBigEndian: &span))
+        }
+      }
+
+      // Invalid values, non-throwing closure
+      #expect(throws: ParsingError.self) {
+        try Range(parsingStartAndCount: &span) { span in
+          UInt64.max
         }
       }
 
@@ -55,8 +62,7 @@ struct RangeParsingTests {
     }
   }
 
-  @Test
-  func startAndEnd() throws {
+  @Test func startAndEnd() throws {
     try buffer.withParserSpan { span in
       let range1 = try Range(parsingStartAndEnd: &span) { span in
         try Int16(parsingBigEndian: &span)
@@ -68,11 +74,18 @@ struct RangeParsingTests {
       #expect(range2 == 3..<4)
     }
 
-    _ = try buffer.withParserSpan { span in
+    buffer.withParserSpan { span in
       // Reversed start and end
       #expect(throws: ParsingError.self) {
         try Range(parsingStartAndEnd: &span) { span in
           try -(Int16(parsingBigEndian: &span))
+        }
+      }
+
+      // Invalid ends, non-throwing closure
+      #expect(throws: ParsingError.self) {
+        try Range(parsingStartAndEnd: &span) { span in
+          Double.nan
         }
       }
 
@@ -108,11 +121,18 @@ struct RangeParsingTests {
       #expect(range2 == 3...6)
     }
 
-    _ = try buffer.withParserSpan { span in
+    buffer.withParserSpan { span in
       // Reversed start and end
       #expect(throws: ParsingError.self) {
         try ClosedRange(parsingStartAndCount: &span) { span in
           try -(Int16(parsingBigEndian: &span))
+        }
+      }
+
+      // Invalid values, non-throwing closure
+      #expect(throws: ParsingError.self) {
+        try ClosedRange(parsingStartAndCount: &span) { span in
+          UInt64.max
         }
       }
 
@@ -145,11 +165,18 @@ struct RangeParsingTests {
       #expect(range2 == 3...4)
     }
 
-    _ = try buffer.withParserSpan { span in
+    buffer.withParserSpan { span in
       // Reversed start and end
       #expect(throws: ParsingError.self) {
         try ClosedRange(parsingStartAndEnd: &span) { span in
           try -(Int16(parsingBigEndian: &span))
+        }
+      }
+
+      // Invalid ends, non-throwing closure
+      #expect(throws: ParsingError.self) {
+        try ClosedRange(parsingStartAndEnd: &span) { span in
+          Double.nan
         }
       }
 

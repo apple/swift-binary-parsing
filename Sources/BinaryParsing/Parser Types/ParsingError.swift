@@ -121,7 +121,7 @@ extension ParsingError.Status: CustomStringConvertible {
 /// In a build for embedded Swift, `ThrownParsingError` instead aliases the
 /// specific `ParsingError` type. Because embedded Swift supports only
 /// fully-typed throws, and not the existential `any Error`, this allows you
-/// to still take use error-throwing APIs in an embedded context.
+/// to still use error-throwing APIs in an embedded context.
 public typealias ThrownParsingError = any Error
 #else
 // Documentation is built using the non-embedded build.

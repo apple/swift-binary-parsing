@@ -19,6 +19,15 @@ public protocol ExpressibleByParsing {
 }
 
 extension ExpressibleByParsing {
+  @_alwaysEmitIntoClient
+  public init(
+    parsing data: some ParserSpanProvider
+  ) throws(ThrownParsingError) {
+    self = try data.withParserSpan(Self.init(parsing:))
+  }
+
+  @_alwaysEmitIntoClient
+  @_disfavoredOverload
   public init(parsing data: some RandomAccessCollection<UInt8>)
     throws(ThrownParsingError)
   {
@@ -41,28 +50,26 @@ extension RandomAccessCollection<UInt8> {
   ) throws(ThrownParsingError) -> T? {
     #if canImport(Foundation)
     if let data = self as? Foundation.Data {
-      do {
-        return try data.withUnsafeBytes { buffer -> T in
-          var span = ParserSpan(_unsafeBytes: buffer)
-          return try body(&span)
-        }
-      } catch {
-        // Workaround for lack of typed-throwing API on Data
-        // swift-format-ignore: NeverForceUnwrap
-        throw error as! ThrownParsingError
+      let result = data.withUnsafeBytes { buffer in
+        var span = ParserSpan(_unsafeBytes: buffer)
+        return Result<T, ThrownParsingError> { try body(&span) }
+      }
+      switch result {
+      case .success(let t): return t
+      case .failure(let e): throw e
       }
     }
     #endif
-    do {
-      return try self.withContiguousStorageIfAvailable { buffer in
-        let rawBuffer = UnsafeRawBufferPointer(buffer)
-        var span = ParserSpan(_unsafeBytes: rawBuffer)
-        return try body(&span)
-      }
-    } catch {
-      // Workaround for lack of typed-throwing API on Collection
-      // swift-format-ignore: NeverForceUnwrap
-      throw error as! ThrownParsingError
+
+    let result = self.withContiguousStorageIfAvailable { buffer in
+      let rawBuffer = UnsafeRawBufferPointer(buffer)
+      var span = ParserSpan(_unsafeBytes: rawBuffer)
+      return Result<T, ThrownParsingError> { try body(&span) }
+    }
+    switch result {
+    case .success(let t): return t
+    case .failure(let e): throw e
+    case nil: return nil
     }
   }
 }
@@ -70,83 +77,85 @@ extension RandomAccessCollection<UInt8> {
 // MARK: ParserSpanProvider
 
 public protocol ParserSpanProvider {
-  func withParserSpan<T>(
-    _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
-  ) throws(ThrownParsingError) -> T
+  func withParserSpan<T, E>(
+    _ body: (inout ParserSpan) throws(E) -> T
+  ) throws(E) -> T
 }
 
-#if canImport(Foundation)
-extension Data: ParserSpanProvider {
+extension ParserSpanProvider {
+  #if !$Embedded
+  @_alwaysEmitIntoClient
   @inlinable
   public func withParserSpan<T>(
-    _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
-  ) throws(ThrownParsingError) -> T {
-    do {
-      return try withUnsafeBytes { buffer -> T in
-        // FIXME: RawSpan getter
-        //      var span = ParserSpan(buffer.bytes)
-        var span = ParserSpan(_unsafeBytes: buffer)
-        return try body(&span)
-      }
-    } catch {
-      // Workaround for lack of typed-throwing API on Data
-      // swift-format-ignore: NeverForceUnwrap
-      throw error as! ThrownParsingError
+    usingRange range: inout ParserRange,
+    _ body: (inout ParserSpan) throws -> T
+  ) throws -> T {
+    try withParserSpan { span in
+      var subspan = try span.seeking(toRange: range)
+      defer { range = subspan.parserRange }
+      return try body(&subspan)
     }
   }
+  #endif
 
   @_alwaysEmitIntoClient
   @inlinable
   public func withParserSpan<T>(
     usingRange range: inout ParserRange,
-    _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
-  ) throws(ThrownParsingError) -> T {
-    do {
-      return try withUnsafeBytes { (buffer) throws(ThrownParsingError) -> T in
-        // FIXME: RawSpan getter
-        //      var span = try ParserSpan(buffer.bytes)
-        var span = try ParserSpan(_unsafeBytes: buffer)
-          .seeking(toRange: range)
-        defer {
-          range = span.parserRange
-        }
-        return try body(&span)
-      }
-    } catch {
-      // Workaround for lack of typed-throwing API on Data
-      // swift-format-ignore: NeverForceUnwrap
-      throw error as! ThrownParsingError
+    _ body: (inout ParserSpan) throws(ParsingError) -> T
+  ) throws(ParsingError) -> T {
+    try withParserSpan { (span) throws(ParsingError) in
+      var subspan = try span.seeking(toRange: range)
+      defer { range = subspan.parserRange }
+      return try body(&subspan)
+    }
+  }
+}
+
+#if canImport(Foundation)
+extension Data: ParserSpanProvider {
+  @inlinable
+  public func withParserSpan<T, E>(
+    _ body: (inout ParserSpan) throws(E) -> T
+  ) throws(E) -> T {
+    let result = withUnsafeBytes { buffer in
+      var span = ParserSpan(_unsafeBytes: buffer)
+      return Result<T, E> { () throws(E) in try body(&span) }
+    }
+    switch result {
+    case .success(let t): return t
+    case .failure(let e): throw e
     }
   }
 }
 #endif
 
-extension ParserSpanProvider where Self: RandomAccessCollection<UInt8> {
-  @discardableResult
-  @inlinable
-  public func withParserSpan<T>(
-    _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
-  ) throws(ThrownParsingError) -> T {
-    do {
-      guard
-        let result = try self.withContiguousStorageIfAvailable({ buffer in
-          // FIXME: RawSpan getter
-          //      var span = ParserSpan(UnsafeRawBufferPointer(buffer).bytes)
-          let rawBuffer = UnsafeRawBufferPointer(buffer)
-          var span = ParserSpan(_unsafeBytes: rawBuffer)
-          return try body(&span)
-        })
-      else {
-        throw ParsingError(status: .userError, location: 0)
-      }
-      return result
-    } catch {
-      // Workaround for lack of typed-throwing API on Collection
-      // swift-format-ignore: NeverForceUnwrap
-      throw error as! ThrownParsingError
+extension [UInt8]: ParserSpanProvider {
+  public func withParserSpan<T, E>(
+    _ body: (inout ParserSpan) throws(E) -> T
+  ) throws(E) -> T {
+    let result = self.withUnsafeBytes { rawBuffer in
+      var span = ParserSpan(_unsafeBytes: rawBuffer)
+      return Result<T, E> { () throws(E) in try body(&span) }
+    }
+    switch result {
+    case .success(let t): return t
+    case .failure(let e): throw e
     }
   }
 }
 
-extension [UInt8]: ParserSpanProvider {}
-extension ArraySlice<UInt8>: ParserSpanProvider {}
+extension ArraySlice<UInt8>: ParserSpanProvider {
+  public func withParserSpan<T, E>(
+    _ body: (inout ParserSpan) throws(E) -> T
+  ) throws(E) -> T {
+    let result = self.withUnsafeBytes { rawBuffer in
+      var span = ParserSpan(_unsafeBytes: rawBuffer)
+      return Result<T, E> { () throws(E) in try body(&span) }
+    }
+    switch result {
+    case .success(let t): return t
+    case .failure(let e): throw e
+    }
+  }
+}
