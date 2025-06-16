@@ -189,114 +189,6 @@ struct IntegerParsingTests {
     }
   }
 
-  func fuzzMultiByteIntegerDownCasting<
-    T: MultiByteInteger, U: MultiByteInteger
-  >(
-    _ type: T.Type,
-    loadingFrom other: U.Type,
-    using rng: inout some RandomNumberGenerator
-  ) throws {
-    assert(T.bitWidth < U.bitWidth || T.isSigned != U.isSigned)
-
-    func runTest(for number: U) {
-      let expected = T(exactly: number)
-
-      do {
-        let bePlain = [UInt8](bigEndian: number)
-        let parsed = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAsBigEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .big)
-        }
-        #expect(parsed2 == expected)
-      }
-
-      do {
-        let lePlain = [UInt8](littleEndian: number)
-        let parsed = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAsLittleEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .little)
-        }
-        #expect(parsed2 == expected)
-      }
-    }
-
-    runTest(for: .zero)
-    runTest(for: .min)
-    runTest(for: .max)
-    for n in 1...(10 as U) {
-      runTest(for: n)
-      if U.isSigned {
-        runTest(for: 0 - n)
-      }
-    }
-
-    for _ in 0..<fuzzIterationCount {
-      let number = numberForFuzzing(T.self, U.self, using: &rng)
-      runTest(for: number)
-    }
-  }
-
-  func fuzzMultiByteIntegerUpCasting<
-    T: MultiByteInteger, U: MultiByteInteger
-  >(
-    _ type: T.Type,
-    loadingFrom other: U.Type,
-    using rng: inout some RandomNumberGenerator
-  ) throws {
-    assert(
-      T.bitWidth > U.bitWidth
-        || (T.bitWidth == U.bitWidth && T.isSigned == U.isSigned))
-
-    func runTest(for number: U) throws {
-      let expected = T(number)
-
-      do {
-        let bePlain = [UInt8](bigEndian: number)
-        let parsed = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAsBigEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .big)
-        }
-        #expect(parsed2 == expected)
-      }
-
-      do {
-        let lePlain = [UInt8](littleEndian: number)
-        let parsed = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAsLittleEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .little)
-        }
-        #expect(parsed2 == expected)
-      }
-    }
-
-    try runTest(for: .zero)
-    try runTest(for: .min)
-    try runTest(for: .max)
-    for n in 1...(10 as U) {
-      try runTest(for: n)
-      if T.isSigned {
-        try runTest(for: 0 - n)
-      }
-    }
-
-    for _ in 0..<fuzzIterationCount {
-      let number = U.random(in: .min ... .max, using: &rng)
-      try runTest(for: number)
-    }
-  }
-
   func fuzzSingleByteInteger<T: SingleByteInteger>(
     _ type: T.Type,
     using rng: inout some RandomNumberGenerator
@@ -382,58 +274,15 @@ struct IntegerParsingTests {
       let number = T.random(in: .min ... .max, using: &rng)
       try runTest(for: number)
     }
-  }
-
-  func fuzzSingleByteIntegerDownCasting<
-    T: SingleByteInteger, U: MultiByteInteger
-  >(
-    _ type: T.Type,
-    loadingFrom other: U.Type,
-    using rng: inout some RandomNumberGenerator
-  ) throws {
-    assert(T.bitWidth < U.bitWidth || T.isSigned != U.isSigned)
-
-    func runTest(for number: U) {
-      let expected = T(exactly: number)
-
-      do {
-        let bePlain = [UInt8](bigEndian: number)
-        let parsed = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAsBigEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? bePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .big)
-        }
-        #expect(parsed2 == expected)
+    
+    let empty: [UInt8] = []
+    try empty.withParserSpan { span in
+      #expect(throws: ParsingError.self) {
+        try T(parsing: &span)
       }
-
-      do {
-        let lePlain = [UInt8](littleEndian: number)
-        let parsed = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAsLittleEndian: U.self)
-        }
-        #expect(parsed == expected)
-        let parsed2 = try? lePlain.withParserSpan {
-          try T(parsing: &$0, storedAs: U.self, endianness: .little)
-        }
-        #expect(parsed2 == expected)
+      #expect(throws: ParsingError.self) {
+        try UInt16(parsing: &span, storedAs: T.self)
       }
-    }
-
-    runTest(for: .zero)
-    runTest(for: .min)
-    runTest(for: .max)
-    for n in 1...(10 as U) {
-      runTest(for: n)
-      if U.isSigned {
-        runTest(for: 0 - n)
-      }
-    }
-
-    for _ in 0..<fuzzIterationCount {
-      let number = numberForFuzzing(T.self, U.self, using: &rng)
-      runTest(for: number)
     }
   }
 
@@ -521,8 +370,8 @@ struct IntegerParsingTests {
     }
   }
 
-  func fuzzPlatformWidthIntegerCasting<
-    T: PlatformWidthInteger, U: MultiByteInteger
+  func fuzzIntegerCasting<
+    T: FixedWidthInteger & BitwiseCopyable, U: MultiByteInteger
   >(
     _ type: T.Type,
     loadingFrom other: U.Type,
@@ -572,8 +421,8 @@ struct IntegerParsingTests {
     }
   }
 
-  func fuzzPlatformWidthIntegerCasting<
-    T: PlatformWidthInteger, U: SingleByteInteger
+  func fuzzIntegerCasting<
+    T: FixedWidthInteger & BitwiseCopyable, U: SingleByteInteger
   >(
     _ type: T.Type,
     loadingFrom other: U.Type,
@@ -618,31 +467,31 @@ struct IntegerParsingTests {
 
     // Single byte types loaded from types with wider storage.
     // - signed from signed & unsigned
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int8.self, loadingFrom: UInt64.self, using: &rng)
 
     // - unsigned from signed & unsigned
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzSingleByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt8.self, loadingFrom: UInt64.self, using: &rng)
 
     // Multibyte types loaded directly.
@@ -655,82 +504,82 @@ struct IntegerParsingTests {
 
     // Multibyte types loaded from types with wider storage.
     // - signed from unsigned
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: UInt64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int32.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int32.self, loadingFrom: UInt64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int64.self, loadingFrom: UInt64.self, using: &rng)
 
     // - signed from signed
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       Int32.self, loadingFrom: Int64.self, using: &rng)
 
     // - unsigned from signed
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: Int64.self, using: &rng)
 
     // - unsigned from unsigned
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: UInt64.self, using: &rng)
-    try fuzzMultiByteIntegerDownCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: UInt64.self, using: &rng)
 
     // Multibyte types loaded from types with narrower storage.
     // - unsigned from unsigned
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt16.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt32.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       UInt64.self, loadingFrom: UInt64.self, using: &rng)
 
     // - signed from signed
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int16.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int32.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int64.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int32.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int64.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzMultiByteIntegerUpCasting(
+    try fuzzIntegerCasting(
       Int64.self, loadingFrom: Int64.self, using: &rng)
 
     // Platform-width types loaded by size.
@@ -738,38 +587,38 @@ struct IntegerParsingTests {
     try fuzzPlatformWidthInteger(UInt.self, using: &rng)
 
     // Platform-width types loaded from fixed-size types.
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: Int8.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: UInt8.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       Int.self, loadingFrom: UInt64.self, using: &rng)
 
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: Int8.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: Int16.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: Int32.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: Int64.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: UInt8.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: UInt16.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: UInt32.self, using: &rng)
-    try fuzzPlatformWidthIntegerCasting(
+    try fuzzIntegerCasting(
       UInt.self, loadingFrom: UInt64.self, using: &rng)
   }
 }
