@@ -25,7 +25,7 @@ extension Range where Bound: FixedWidthInteger {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = Range(uncheckedBounds: (start, end))
+    self = unsafe Range(uncheckedBounds: (start, end))
   }
   #endif
 
@@ -41,7 +41,7 @@ extension Range where Bound: FixedWidthInteger {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = Range(uncheckedBounds: (start, end))
+    self = unsafe Range(uncheckedBounds: (start, end))
   }
 }
 
@@ -64,7 +64,7 @@ extension ClosedRange where Bound: FixedWidthInteger {
         status: .invalidValue,
         location: _input.startPosition)
     }
-    self = ClosedRange(uncheckedBounds: (start, end))
+    self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
   #endif
 
@@ -85,7 +85,7 @@ extension ClosedRange where Bound: FixedWidthInteger {
         status: .invalidValue,
         location: _input.startPosition)
     }
-    self = ClosedRange(uncheckedBounds: (start, end))
+    self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
 }
 
@@ -105,7 +105,7 @@ extension Range {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = Range(uncheckedBounds: (start, end))
+    self = unsafe Range(uncheckedBounds: (start, end))
   }
   #endif
 
@@ -121,7 +121,7 @@ extension Range {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = Range(uncheckedBounds: (start, end))
+    self = unsafe Range(uncheckedBounds: (start, end))
   }
 }
 
@@ -139,7 +139,7 @@ extension ClosedRange {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = ClosedRange(uncheckedBounds: (start, end))
+    self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
   #endif
 
@@ -155,6 +155,6 @@ extension ClosedRange {
         status: .invalidValue,
         location: input.startPosition)
     }
-    self = ClosedRange(uncheckedBounds: (start, end))
+    self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
 }

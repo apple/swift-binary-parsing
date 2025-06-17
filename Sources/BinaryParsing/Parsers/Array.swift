@@ -16,8 +16,8 @@ extension Array where Element == UInt8 {
     throws(ParsingError)
   {
     defer { _ = input.divide(atOffset: input.count) }
-    self = input.withUnsafeBytes { buffer in
-      Array(buffer)
+    self = unsafe input.withUnsafeBytes { buffer in
+      unsafe Array(buffer)
     }
   }
 
@@ -27,8 +27,8 @@ extension Array where Element == UInt8 {
     throws(ParsingError)
   {
     let slice = try input._divide(atByteOffset: byteCount)
-    self = slice.withUnsafeBytes { buffer in
-      Array(buffer)
+    self = unsafe slice.withUnsafeBytes { buffer in
+      unsafe Array(buffer)
     }
   }
 }

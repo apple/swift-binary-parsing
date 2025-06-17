@@ -50,8 +50,8 @@ extension RandomAccessCollection<UInt8> {
   ) throws(ThrownParsingError) -> T? {
     #if canImport(Foundation)
     if let data = self as? Foundation.Data {
-      let result = data.withUnsafeBytes { buffer in
-        var span = ParserSpan(_unsafeBytes: buffer)
+      let result = unsafe data.withUnsafeBytes { buffer in
+        var span = unsafe ParserSpan(_unsafeBytes: buffer)
         return Result<T, ThrownParsingError> { try body(&span) }
       }
       switch result {
@@ -63,7 +63,7 @@ extension RandomAccessCollection<UInt8> {
 
     let result = self.withContiguousStorageIfAvailable { buffer in
       let rawBuffer = UnsafeRawBufferPointer(buffer)
-      var span = ParserSpan(_unsafeBytes: rawBuffer)
+      var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
       return Result<T, ThrownParsingError> { try body(&span) }
     }
     switch result {
@@ -118,8 +118,8 @@ extension Data: ParserSpanProvider {
   public func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
-    let result = withUnsafeBytes { buffer in
-      var span = ParserSpan(_unsafeBytes: buffer)
+    let result = unsafe withUnsafeBytes { buffer in
+      var span = unsafe ParserSpan(_unsafeBytes: buffer)
       return Result<T, E> { () throws(E) in try body(&span) }
     }
     switch result {
@@ -134,8 +134,8 @@ extension [UInt8]: ParserSpanProvider {
   public func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
-    let result = self.withUnsafeBytes { rawBuffer in
-      var span = ParserSpan(_unsafeBytes: rawBuffer)
+    let result = unsafe self.withUnsafeBytes { rawBuffer in
+      var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
       return Result<T, E> { () throws(E) in try body(&span) }
     }
     switch result {
@@ -149,8 +149,8 @@ extension ArraySlice<UInt8>: ParserSpanProvider {
   public func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
-    let result = self.withUnsafeBytes { rawBuffer in
-      var span = ParserSpan(_unsafeBytes: rawBuffer)
+    let result = unsafe self.withUnsafeBytes { rawBuffer in
+      var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
       return Result<T, E> { () throws(E) in try body(&span) }
     }
     switch result {

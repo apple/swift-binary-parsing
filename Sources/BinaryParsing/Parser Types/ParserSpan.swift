@@ -29,10 +29,11 @@ public struct ParserSpan: ~Escapable, BitwiseCopyable {
     self._upperBound = _bytes.byteCount
   }
 
+  @unsafe
   @inlinable
   @lifetime(borrow buffer)
   public init(_unsafeBytes buffer: UnsafeRawBufferPointer) {
-    self._bytes = RawSpan(_unsafeBytes: buffer)
+    self._bytes = unsafe RawSpan(_unsafeBytes: buffer)
     self._lowerBound = 0
     self._upperBound = _bytes.byteCount
   }
@@ -111,7 +112,7 @@ extension ParserSpan {
   subscript(offset i: Int) -> UInt8 {
     precondition(i >= 0)
     precondition(i < count)
-    return _bytes.unsafeLoad(
+    return unsafe _bytes.unsafeLoad(
       fromUncheckedByteOffset: _lowerBound &+ i,
       as: UInt8.self)
   }
@@ -124,10 +125,10 @@ extension ParserSpan {
   public func withUnsafeBytes<T, E>(
     _ body: (UnsafeRawBufferPointer) throws(E) -> T
   ) throws(E) -> T {
-    try _bytes.withUnsafeBytes { (fullBuffer) throws(E) in
-      let buffer = UnsafeRawBufferPointer(
+    try unsafe _bytes.withUnsafeBytes { (fullBuffer) throws(E) in
+      let buffer = unsafe UnsafeRawBufferPointer(
         rebasing: fullBuffer[_lowerBound..<_upperBound])
-      return try body(buffer)
+      return try unsafe body(buffer)
     }
   }
 }
@@ -153,25 +154,27 @@ extension ParserSpan {
   @discardableResult
   mutating func consume() -> UInt8? {
     guard !isEmpty else { return nil }
-    return consumeUnchecked()
+    return unsafe consumeUnchecked()
   }
 
+  @unsafe
   @inlinable
   @lifetime(copy self)
   mutating func consumeUnchecked(type: UInt8.Type = UInt8.self) -> UInt8 {
     defer { _lowerBound &+= 1 }
-    return _bytes.unsafeLoad(
+    return unsafe _bytes.unsafeLoad(
       fromUncheckedByteOffset: _lowerBound,
       as: UInt8.self)
   }
 
+  @unsafe
   @inlinable
   @lifetime(copy self)
   mutating func consumeUnchecked<T: FixedWidthInteger & BitwiseCopyable>(
     type: T.Type
   ) -> T {
     defer { _lowerBound += MemoryLayout<T>.stride }
-    return _bytes.unsafeLoadUnaligned(
+    return unsafe unsafe _bytes.unsafeLoadUnaligned(
       fromUncheckedByteOffset: _lowerBound,
       as: T.self)
   }

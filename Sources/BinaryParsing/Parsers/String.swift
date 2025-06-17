@@ -15,22 +15,22 @@ extension String {
   public init(parsingNulTerminated input: inout ParserSpan) throws(ParsingError)
   {
     guard
-      let nulOffset = input.withUnsafeBytes({ buffer in
-        buffer.firstIndex(of: 0)
+      let nulOffset = unsafe input.withUnsafeBytes({ buffer in
+        unsafe buffer.firstIndex(of: 0)
       })
     else {
       throw ParsingError(status: .invalidValue, location: input.startPosition)
     }
     try self.init(parsingUTF8: &input, count: nulOffset)
-    _ = input.consumeUnchecked()
+    _ = unsafe input.consumeUnchecked()
   }
 
   @inlinable
   @lifetime(&input)
   public init(parsingUTF8 input: inout ParserSpan) throws(ParsingError) {
     let stringBytes = input.divide(at: input.endPosition)
-    self = stringBytes.withUnsafeBytes { buffer in
-      String(decoding: buffer, as: UTF8.self)
+    self = unsafe stringBytes.withUnsafeBytes { buffer in
+      unsafe String(decoding: buffer, as: UTF8.self)
     }
   }
 
@@ -43,15 +43,16 @@ extension String {
     try self.init(parsingUTF8: &slice)
   }
 
+  @unsafe
   @inlinable
   @lifetime(&input)
   internal init(_uncheckedParsingUTF16 input: inout ParserSpan)
     throws(ParsingError)
   {
     let stringBytes = input.divide(at: input.endPosition)
-    self = stringBytes.withUnsafeBytes { buffer in
-      let utf16Buffer = buffer.assumingMemoryBound(to: UInt16.self)
-      return String(decoding: utf16Buffer, as: UTF16.self)
+    self = unsafe stringBytes.withUnsafeBytes { buffer in
+      let utf16Buffer = unsafe buffer.assumingMemoryBound(to: UInt16.self)
+      return unsafe String(decoding: utf16Buffer, as: UTF16.self)
     }
   }
 
@@ -61,7 +62,7 @@ extension String {
     guard input.count.isMultiple(of: 2) else {
       throw ParsingError(status: .invalidValue, location: input.startPosition)
     }
-    try self.init(_uncheckedParsingUTF16: &input)
+    unsafe try self.init(_uncheckedParsingUTF16: &input)
   }
 
   @inlinable
@@ -71,6 +72,6 @@ extension String {
   {
     var slice = try input._divide(
       atByteOffset: codeUnitCount.multipliedThrowingOnOverflow(by: 2))
-    try self.init(_uncheckedParsingUTF16: &slice)
+    unsafe try self.init(_uncheckedParsingUTF16: &slice)
   }
 }

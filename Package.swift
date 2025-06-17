@@ -40,6 +40,7 @@ let package = Package(
         .enableExperimentalFeature("Span"),
         .enableExperimentalFeature("ValueGenerics"),
         .enableExperimentalFeature("LifetimeDependence"),
+        .strictMemorySafety(),
       ]
     ),
     //    .target(
