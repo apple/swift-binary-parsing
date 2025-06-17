@@ -174,7 +174,7 @@ extension ParserSpan {
     type: T.Type
   ) -> T {
     defer { _lowerBound += MemoryLayout<T>.stride }
-    return unsafe unsafe _bytes.unsafeLoadUnaligned(
+    return unsafe _bytes.unsafeLoadUnaligned(
       fromUncheckedByteOffset: _lowerBound,
       as: T.self)
   }
