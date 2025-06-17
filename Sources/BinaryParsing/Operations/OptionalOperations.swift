@@ -20,7 +20,6 @@ extension Collection {
   
   @inlinable
   public subscript(ifInBounds range: Range<Index>) -> SubSequence? {
-    let bounds = startIndex...endIndex
     guard range.lowerBound >= startIndex, range.upperBound <= endIndex
     else { return nil }
     return self[range]

@@ -276,7 +276,7 @@ struct IntegerParsingTests {
     }
     
     let empty: [UInt8] = []
-    try empty.withParserSpan { span in
+    empty.withParserSpan { span in
       #expect(throws: ParsingError.self) {
         try T(parsing: &span)
       }

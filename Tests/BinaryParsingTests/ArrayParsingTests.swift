@@ -62,7 +62,7 @@ struct ArrayParsingTests {
     }
 
     // 'byteCount' greater than available bytes
-    try testBuffer.withParserSpan { span in
+    testBuffer.withParserSpan { span in
       #expect(throws: ParsingError.self) {
         _ = try [UInt8](parsing: &span, byteCount: testBuffer.count + 1)
       }
@@ -119,7 +119,7 @@ struct ArrayParsingTests {
     }
 
     // Non-'Int' count that would overflow
-    _ = try testBuffer.withParserSpan { span in
+    _ = testBuffer.withParserSpan { span in
       #expect(throws: ParsingError.self) {
         _ = try [UInt8](parsing: &span, count: UInt.max) { input in
           try UInt8(parsing: &input)
@@ -154,7 +154,7 @@ struct ArrayParsingTests {
       #expect(span.count == 5)
     }
 
-    _ = try [0x0f, 0xf0].withParserSpan { span in
+    _ = [0x0f, 0xf0].withParserSpan { span in
       #expect(throws: TestError.self) {
         try Array(parsingAll: &span, parser: CustomType.init(parsing:))
       }

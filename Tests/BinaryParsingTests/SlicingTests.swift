@@ -85,7 +85,7 @@ struct SlicingTests {
     }
 
     // Test with empty buffer
-    try emptyBuffer.withParserSpan { input in
+    emptyBuffer.withParserSpan { input in
       let emptyRange = input.sliceRemainingRange()
       #expect(emptyRange.isEmpty)
       #expect(input.count == 0)

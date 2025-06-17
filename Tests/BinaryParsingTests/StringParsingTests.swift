@@ -162,7 +162,7 @@ struct StringParsingTests {
     }
 
     // Buffer with odd number of bytes should throw
-    try [0x48, 0x00, 0x65].withParserSpan { span in
+    _ = [0x48, 0x00, 0x65].withParserSpan { span in
       #expect(throws: ParsingError.self) {
         _ = try String(parsingUTF16: &span)
       }
@@ -204,7 +204,7 @@ struct StringParsingTests {
     }
 
     // Parse with count larger than the buffer can provide
-    try buffer.withParserSpan { span in
+    buffer.withParserSpan { span in
       let codeUnitCount = testString.utf16.count + 1
       #expect(throws: ParsingError.self) {
         _ = try String(parsingUTF16: &span, codeUnitCount: codeUnitCount)
