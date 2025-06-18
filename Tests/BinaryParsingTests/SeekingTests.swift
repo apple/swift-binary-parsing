@@ -61,7 +61,7 @@ struct SeekingTests {
 
       // Absolute offset is always referent to original bounds
       var slice1 = try input.sliceSpan(byteCount: 4)
-      var slice2 = slice1
+      var slice2 = try input.seeking(toRange: slice1.parserRange)
       #expect(slice1.startPosition == 2)
       #expect(slice1.count == 4)
 

@@ -12,7 +12,7 @@
 /// A non-owning, non-escaping view for parsing binary data.
 ///
 /// You can access a `ParserSpan` from a
-public struct ParserSpan: ~Escapable, BitwiseCopyable {
+public struct ParserSpan: ~Escapable, ~Copyable {
   @usableFromInline
   var _bytes: RawSpan
   @usableFromInline
@@ -27,6 +27,14 @@ public struct ParserSpan: ~Escapable, BitwiseCopyable {
     self._bytes = _bytes
     self._lowerBound = 0
     self._upperBound = _bytes.byteCount
+  }
+
+  @inlinable
+  @lifetime(copy other)
+  init(copying other: borrowing ParserSpan) {
+    self._bytes = other._bytes
+    self._lowerBound = other._lowerBound
+    self._upperBound = other._upperBound
   }
 
   @unsafe
@@ -91,7 +99,7 @@ extension ParserSpan {
   mutating func divide(at index: Int) -> ParserSpan {
     precondition(index >= _lowerBound)
     precondition(index <= _upperBound)
-    var result = self
+    var result = ParserSpan(copying: self)
     result._upperBound = index
     self._lowerBound = index
     return result
@@ -193,7 +201,7 @@ extension ParserSpan {
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
     // Make a mutable copy to perform the work in `body`.
-    var copy = self
+    var copy = ParserSpan(copying: self)
     let result = try body(&copy)
     // `body` didn't throw, so update `self`.
     self = copy

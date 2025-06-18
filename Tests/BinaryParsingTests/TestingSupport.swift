@@ -14,7 +14,7 @@ import Testing
 
 /// Returns a Boolean value indicating whether two parser spans are identical,
 /// representing the same subregion of the same span of memory.
-func === (lhs: ParserSpan, rhs: ParserSpan) -> Bool {
+func === (lhs: borrowing ParserSpan, rhs: borrowing ParserSpan) -> Bool {
   guard lhs.startPosition == rhs.startPosition,
     lhs.count == rhs.count
   else { return false }

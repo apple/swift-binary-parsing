@@ -15,7 +15,7 @@ extension ParserSpan {
   public func seeking(toRange range: ParserRange)
     throws(ParsingError) -> ParserSpan
   {
-    var result = self
+    var result = ParserSpan(copying: self)
     try result.seek(toRange: range)
     return result
   }
@@ -25,7 +25,7 @@ extension ParserSpan {
   public func seeking(toRelativeOffset offset: some FixedWidthInteger)
     throws(ParsingError) -> ParserSpan
   {
-    var result = self
+    var result = ParserSpan(copying: self)
     try result.seek(toRelativeOffset: offset)
     return result
   }
@@ -35,7 +35,7 @@ extension ParserSpan {
   public func seeking(toAbsoluteOffset offset: some FixedWidthInteger)
     throws(ParsingError) -> ParserSpan
   {
-    var result = self
+    var result = ParserSpan(copying: self)
     try result.seek(toAbsoluteOffset: offset)
     return result
   }
@@ -45,7 +45,7 @@ extension ParserSpan {
   public func seeking(toOffsetFromEnd offset: some FixedWidthInteger)
     throws(ParsingError) -> ParserSpan
   {
-    var result = self
+    var result = ParserSpan(copying: self)
     try result.seek(toOffsetFromEnd: offset)
     return result
   }
