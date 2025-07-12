@@ -80,7 +80,9 @@ extension Array {
     count: some FixedWidthInteger,
     parser: (inout ParserSpan) throws -> Element
   ) throws {
-    let count = try Int(throwingOnOverflow: count)
+    guard let count = Int(exactly: count), count >= 0 else {
+      throw ParsingError(statusOnly: .invalidValue)
+    }
     self = []
     self.reserveCapacity(count)
     // This doesn't throw (e.g. on empty) because `parser` can produce valid
@@ -118,11 +120,14 @@ extension Array {
   /// - Throws: An error if one is thrown from `parser`.
   @inlinable
   @lifetime(&input)
-  public init<E>(
+  public init(
     parsing input: inout ParserSpan,
     count: Int,
-    parser: (inout ParserSpan) throws(E) -> Element
-  ) throws(E) {
+    parser: (inout ParserSpan) throws(ThrownParsingError) -> Element
+  ) throws(ThrownParsingError) {
+    guard count >= 0 else {
+      throw ParsingError(statusOnly: .invalidValue)
+    }
     self = []
     self.reserveCapacity(count)
     // This doesn't throw (e.g. on empty) because `parser` can produce valid

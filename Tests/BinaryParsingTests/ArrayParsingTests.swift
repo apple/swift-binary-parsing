@@ -21,8 +21,8 @@ struct ArrayParsingTests {
 
   @Test
   func parseRemainingBytes() throws {
-    try testBuffer.withParserSpan { span in
-      let parsedArray = try Array(parsingRemainingBytes: &span)
+    testBuffer.withParserSpan { span in
+      let parsedArray = Array(parsingRemainingBytes: &span)
       #expect(parsedArray == testBuffer)
       #expect(span.count == 0)
     }
@@ -30,14 +30,14 @@ struct ArrayParsingTests {
     // Test parsing after consuming part of the buffer
     try testBuffer.withParserSpan { span in
       try span.seek(toRelativeOffset: 3)
-      let parsedArray = try Array(parsingRemainingBytes: &span)
+      let parsedArray = Array(parsingRemainingBytes: &span)
       #expect(parsedArray[...] == testBuffer.dropFirst(3))
       #expect(span.count == 0)
     }
 
     // Test with an empty span
-    try emptyBuffer.withParserSpan { span in
-      let parsedArray = try [UInt8](parsingRemainingBytes: &span)
+    emptyBuffer.withParserSpan { span in
+      let parsedArray = [UInt8](parsingRemainingBytes: &span)
       #expect(parsedArray.isEmpty)
     }
   }
@@ -65,6 +65,14 @@ struct ArrayParsingTests {
     testBuffer.withParserSpan { span in
       #expect(throws: ParsingError.self) {
         _ = try [UInt8](parsing: &span, byteCount: testBuffer.count + 1)
+      }
+      #expect(span.count == testBuffer.count)
+    }
+
+    // Negative 'byteCount'
+    testBuffer.withParserSpan { span in
+      #expect(throws: ParsingError.self) {
+        _ = try [UInt8](parsing: &span, byteCount: -1)
       }
       #expect(span.count == testBuffer.count)
     }
@@ -118,10 +126,18 @@ struct ArrayParsingTests {
       #expect(span.count == 0)
     }
 
-    // Non-'Int' count that would overflow
-    _ = testBuffer.withParserSpan { span in
+    // Error checking
+    testBuffer.withParserSpan { span in
+      // Overflow when 'Int'
       #expect(throws: ParsingError.self) {
         _ = try [UInt8](parsing: &span, count: UInt.max) { input in
+          try UInt8(parsing: &input)
+        }
+      }
+
+      // Negative count
+      #expect(throws: ParsingError.self) {
+        _ = try [UInt8](parsing: &span, count: -1) { input in
           try UInt8(parsing: &input)
         }
       }
