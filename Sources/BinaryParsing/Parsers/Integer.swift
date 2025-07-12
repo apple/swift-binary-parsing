@@ -163,7 +163,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
     // 2) Load and store value in `result`.
     let result =
-    unsafe endianness.isBigEndian
+      unsafe endianness.isBigEndian
       ? Self(_unchecked: (), _parsingBigEndian: &input)
       : Self(_unchecked: (), _parsingLittleEndian: &input)
 
@@ -207,7 +207,8 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     func consumeZeroPadding() throws(ParsingError) {
       var paddingBuffer = input.divide(atOffset: paddingCount)
       for _ in 0..<paddingCount {
-        guard unsafe 0 == paddingBuffer.consumeUnchecked(type: UInt8.self) else {
+        guard unsafe 0 == paddingBuffer.consumeUnchecked(type: UInt8.self)
+        else {
           throw ParsingError(
             status: .invalidValue, location: paddingBuffer.startPosition)
         }
@@ -217,12 +218,12 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     if endianness.isBigEndian {
       try consumeZeroPadding()
       self =
-      unsafe endianness.isBigEndian
+        unsafe endianness.isBigEndian
         ? Self(_unchecked: (), _parsingBigEndian: &input)
         : Self(_unchecked: (), _parsingLittleEndian: &input)
     } else {
       self =
-      unsafe endianness.isBigEndian
+        unsafe endianness.isBigEndian
         ? Self(_unchecked: (), _parsingBigEndian: &input)
         : Self(_unchecked: (), _parsingLittleEndian: &input)
       try consumeZeroPadding()
@@ -241,7 +242,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     let paddingCount = byteCount - MemoryLayout<Self>.size
     if paddingCount < 0 {
       self =
-      unsafe Self.isSigned
+        unsafe Self.isSigned
         ? Self(
           _unchecked: (), _parsingSigned: &input, endianness: endianness,
           byteCount: byteCount)
@@ -250,7 +251,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
           byteCount: byteCount)
     } else {
       self =
-      try unsafe Self.isSigned
+        try unsafe Self.isSigned
         ? Self(
           _unchecked: (), _parsingSigned: &input, endianness: endianness,
           paddingCount: paddingCount)
@@ -330,7 +331,7 @@ extension MultiByteInteger {
     _unchecked _: Void, parsing input: inout ParserSpan, endianness: Endianness
   ) {
     self =
-    unsafe endianness.isBigEndian
+      unsafe endianness.isBigEndian
       ? Self(_unchecked: (), _parsingBigEndian: &input)
       : Self(_unchecked: (), _parsingLittleEndian: &input)
   }
@@ -485,8 +486,8 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   /// - Parameters:
   ///   - input: The `ParserSpan` to parse from. If parsing succeeds, the start
   ///     position of `input` is moved forward by `byteCount`.
-  ///   - byteCount: The number of bytes to read the value from.
   ///   - endianness: The endianness to use when interpreting the parsed value.
+  ///   - byteCount: The number of bytes to read the value from.
   /// - Throws: A `ParsingError` if `input` contains fewer than `byteCount`
   ///   bytes, if the parsed value overflows this integer type, or if the
   ///   padding bytes are invalid.
@@ -601,7 +602,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     endianness: Endianness
   ) throws(ParsingError) {
     let result =
-    unsafe endianness.isBigEndian
+      unsafe endianness.isBigEndian
       ? T(_unchecked: (), _parsingBigEndian: &input)
       : T(_unchecked: (), _parsingLittleEndian: &input)
     self = try Self(_throwing: result)
@@ -654,7 +655,8 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     parsing input: inout ParserSpan,
     storedAs: T.Type
   ) throws(ParsingError) {
-    self = try unsafe Self(_throwing: T(truncatingIfNeeded: input.consumeUnchecked()))
+    self = try unsafe Self(
+      _throwing: T(truncatingIfNeeded: input.consumeUnchecked()))
   }
 
   /// Creates an integer by parsing and converting a value of the given
@@ -678,7 +680,6 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///     position of `input` is moved forward by the size of this integer.
   ///   - storageType: The integer type to parse from `input` before conversion
   ///     to the destination type.
-  ///   - endianness: The endianness to use when interpreting the parsed value.
   /// - Throws: A `ParsingError` if `input` does not have enough bytes to store
   ///   `storageType`, or if converting the parsed value to this integer type
   ///   overflows.
