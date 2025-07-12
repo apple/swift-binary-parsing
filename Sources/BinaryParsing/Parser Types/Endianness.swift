@@ -48,7 +48,7 @@ extension Endianness {
   public var isBigEndian: Bool {
     _isBigEndian
   }
-  
+
   /// A Boolean value inidicating whether the endianness is little-endian.
   public var isLittleEndian: Bool {
     !_isBigEndian

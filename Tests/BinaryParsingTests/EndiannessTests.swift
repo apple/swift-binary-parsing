@@ -18,7 +18,7 @@ struct EndiannessTests {
     let endianness = Endianness(isBigEndian: isBigEndian)
     #expect(endianness.isBigEndian == isBigEndian)
     #expect(endianness.isLittleEndian == !isBigEndian)
-    
+
     let endianness2: Endianness = isBigEndian ? .big : .little
     #expect(endianness == endianness2)
   }

@@ -19,7 +19,7 @@ extension Collection {
     }
     return self[i]
   }
-  
+
   /// Returns the subsequence at the given range, or `nil` if the range is out
   /// of bounds.
   @inlinable
@@ -40,14 +40,17 @@ extension Collection where Index == Int {
     }
     return self[i]
   }
-  
+
   /// Returns the subsequence at the given range after converting the bounds
   /// to `Int`, or `nil` if the range is out of bounds.
   @_alwaysEmitIntoClient
-  public subscript(ifInBounds bounds: Range<some FixedWidthInteger>) -> SubSequence? {
+  public subscript(ifInBounds bounds: Range<some FixedWidthInteger>)
+    -> SubSequence?
+  {
     guard let low = Int(exactly: bounds.lowerBound),
-          let high = Int(exactly: bounds.upperBound),
-          low >= startIndex, high <= endIndex else {
+      let high = Int(exactly: bounds.upperBound),
+      low >= startIndex, high <= endIndex
+    else {
       return nil
     }
     return self[low..<high]

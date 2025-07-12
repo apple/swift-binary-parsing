@@ -94,7 +94,7 @@ extension Optional where Wrapped: FixedWidthInteger {
   public static func -?= (a: inout Self, b: Self) {
     a = a -? b
   }
-  
+
   /// Multiplies two values and stores the result in the left-hand-side variable,
   /// if the values are non-`nil` and the result is representable.
   @inlinable @inline(__always)

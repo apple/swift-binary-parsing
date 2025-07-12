@@ -21,7 +21,7 @@ extension Collection {
       return self[i]
     }
   }
-  
+
   /// Returns the subsequence in the given range, throwing an error if the range
   /// is not in bounds.
   @inlinable

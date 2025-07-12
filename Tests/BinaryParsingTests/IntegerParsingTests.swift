@@ -274,7 +274,7 @@ struct IntegerParsingTests {
       let number = T.random(in: .min ... .max, using: &rng)
       try runTest(for: number)
     }
-    
+
     let empty: [UInt8] = []
     empty.withParserSpan { span in
       #expect(throws: ParsingError.self) {

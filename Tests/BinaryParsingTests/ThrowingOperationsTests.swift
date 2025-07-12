@@ -159,7 +159,7 @@ struct ThrowingOperationsTests {
         try Self.numbers[throwing: i]
       }
     }
-    
+
     let validBounds = Self.numbers.startIndex...Self.numbers.endIndex
     for j in i...10 {
       if validBounds.contains(i), validBounds.contains(j) {
