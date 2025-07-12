@@ -10,7 +10,7 @@
 //===----------------------------------------------------------------------===//
 
 @lifetime(&input)
-func _loadAndCheckDirectBytes<
+public func _loadAndCheckDirectBytes<
   T: FixedWidthInteger & MultiByteInteger & BitwiseCopyable
 >(
   parsing input: inout ParserSpan,
@@ -24,7 +24,7 @@ func _loadAndCheckDirectBytes<
 }
 
 @lifetime(&input)
-func _loadAndCheckDirectBytesByteOrder<
+public func _loadAndCheckDirectBytesByteOrder<
   T: FixedWidthInteger & MultiByteInteger & BitwiseCopyable
 >(
   parsing input: inout ParserSpan,
