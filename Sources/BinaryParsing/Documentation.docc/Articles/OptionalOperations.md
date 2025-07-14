@@ -44,7 +44,7 @@ guard let range = start ..<? (start +? count) else {
 
 ### Collection subscripting
 
-- ``Swift/Collection/subscript(ifInBounds:)-(Index)``
+- ``Swift/Collection/subscript(ifInBounds:)-(Self.Index)``
 - ``Swift/Collection/subscript(ifInBounds:)-(FixedWidthInteger)``
-- ``Swift/Collection/subscript(ifInBounds:)-(Range<Index>)``
+- ``Swift/Collection/subscript(ifInBounds:)-(Range<Self.Index>)``
 - ``Swift/Collection/subscript(ifInBounds:)-(Range<FixedWidthInteger>)``
