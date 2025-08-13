@@ -38,5 +38,7 @@ jobs:
       format_check_container_image: swiftlang/swift:nightly-6.2-jammy
       shell_check_enabled: true
       yamllint_check_enabled: true
-      api_breakage_check_enabled: false
-      docs_check_enabled: false  # doc check runs using 6.0.3 compiler
+      api_breakage_check_enabled: true
+      api_breakage_check_container_image: swiftlang/swift:nightly-6.2-jammy
+      docs_check_enabled: true
+      docs_check_container_image: swiftlang/swift:nightly-6.2-jammy
