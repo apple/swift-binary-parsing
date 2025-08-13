@@ -1,6 +1,6 @@
 # Miscellaneous Parsers
 
-Parse ranges and custom raw representable types.
+Parse ranges and custom raw representable types, or raw bytes into Foundation's `Data`.
 
 ## Topics
 
@@ -20,3 +20,8 @@ Parse ranges and custom raw representable types.
 - ``Swift/RawRepresentable/init(parsing:storedAsBigEndian:)``
 - ``Swift/RawRepresentable/init(parsing:storedAsLittleEndian:)``
 - ``Swift/RawRepresentable/init(parsing:storedAs:endianness:)``
+
+### Data parsers
+
+- ``Foundation/Data/init(parsingRemainingBytes:)``
+- ``Foundation/Data/init(parsing:byteCount:)``
