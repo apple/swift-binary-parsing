@@ -16,7 +16,7 @@ enum Regexes {
   nonisolated(unsafe)
     static let integerTypeRegex = /U?Int(?:8|16|32|64|)/
 
-  /// The regex for non-platform integer types (e.g. Int8, Int16, UInt32).
+  /// The regex for non-platform integer types (such as Int8, Int16, UInt32).
   nonisolated(unsafe)
     static let nonPlatformIntegerTypeRegex = /U?Int(?:8|16|32|64)/
 
