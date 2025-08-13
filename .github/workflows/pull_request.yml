@@ -35,6 +35,7 @@ jobs:
     uses: swiftlang/github-workflows/.github/workflows/soundness.yml@main
     with:
       format_check_enabled: true
+      format_check_container_image: swiftlang/swift:nightly-6.2-jammy
       shell_check_enabled: true
       yamllint_check_enabled: true
       api_breakage_check_enabled: false
