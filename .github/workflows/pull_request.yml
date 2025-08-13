@@ -40,5 +40,5 @@ jobs:
       yamllint_check_enabled: true
       api_breakage_check_enabled: true
       api_breakage_check_container_image: swiftlang/swift:nightly-6.2-jammy
-      docs_check_enabled: true
+      docs_check_enabled: false  # nightly container has issues installing yq
       docs_check_container_image: swiftlang/swift:nightly-6.2-jammy
