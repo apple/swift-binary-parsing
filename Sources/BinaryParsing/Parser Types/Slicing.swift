@@ -27,7 +27,7 @@ extension ParserSpan {
   ///   `Int`, if it's negative, or if there aren't enough bytes in the
   ///   original span.
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   public mutating func sliceSpan(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> ParserSpan
   {
@@ -60,7 +60,7 @@ extension ParserSpan {
   ///   cannot be represented as an `Int`, if their product would overflow, or
   ///   if the product is not in the range `0...count`.
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   public mutating func sliceSpan(
     objectStride: some FixedWidthInteger,
     objectCount: some FixedWidthInteger
@@ -98,7 +98,7 @@ extension ParserSpan {
   ///   `Int`, if it's negative, or if there aren't enough bytes in the
   ///   original span.
   @inlinable
-  @lifetime(&self)
+  @_lifetime(&self)
   public mutating func sliceRange(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> ParserRange
   {
@@ -129,7 +129,7 @@ extension ParserSpan {
   ///   cannot be represented as an `Int`, if their product would overflow, or
   ///   if the product is not in the range `0...count`.
   @inlinable
-  @lifetime(&self)
+  @_lifetime(&self)
   public mutating func sliceRange(
     objectStride: some FixedWidthInteger,
     objectCount: some FixedWidthInteger
@@ -148,7 +148,7 @@ extension ParserSpan {
   /// - Returns: A parser range covering the rest of the memory represented
   ///   by this parser span.
   @inlinable
-  @lifetime(&self)
+  @_lifetime(&self)
   public mutating func sliceRemainingRange() -> ParserRange {
     divide(atOffset: self.count).parserRange
   }
@@ -174,7 +174,7 @@ extension ParserSpan {
   ///   `Int`, if it's negative, if there aren't enough bytes in the original
   ///   span, or if the bytes don't form valid UTF-8.
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   @available(macOS 26.0, iOS 26.0, watchOS 26.0, tvOS 26.0, *)
   public mutating func sliceUTF8Span(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> UTF8Span

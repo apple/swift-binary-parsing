@@ -19,7 +19,7 @@ public enum Chunk {
   case other(String, [UInt8])
   case end
 
-  @lifetime(&input)
+  @_lifetime(&input)
   init(parsing input: inout ParserSpan) throws {
     let length = try UInt32(parsingBigEndian: &input)
     let id = try UInt32(parsingBigEndian: &input)

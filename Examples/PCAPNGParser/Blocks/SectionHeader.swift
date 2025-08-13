@@ -108,7 +108,7 @@ public struct SectionHeader: Equatable {
 }
 
 extension SectionHeader.Option: BlockOption {
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     parsing input: inout ParserSpan,
     for optionCode: UInt16,

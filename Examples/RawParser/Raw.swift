@@ -24,7 +24,7 @@ public func parseRaw(
 }
 
 extension String {
-  @lifetime(&input)
+  @_lifetime(&input)
   init(parsingRaw input: inout ParserSpan, digits: Int, offset: Int) throws {
     let start = input.startPosition
     let row = try Array(parsing: &input, byteCount: Swift.min(16, input.count))

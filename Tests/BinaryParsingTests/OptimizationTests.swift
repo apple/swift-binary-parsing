@@ -24,7 +24,7 @@ private let data: [UInt8] = [
 ]
 
 struct OptimizationTests {
-  @lifetime(&input)
+  @_lifetime(&input)
   func precheckParseFour(parsing input: inout ParserSpan) throws -> Int {
     try input._checkCount(minimum: 16)
     let a = UInt32(_unchecked: (), parsingBigEndian: &input)
@@ -34,7 +34,7 @@ struct OptimizationTests {
     return Int(a + b + c + d)
   }
 
-  @lifetime(&input)
+  @_lifetime(&input)
   func parseFour(parsing input: inout ParserSpan) throws -> Int {
     let a = try UInt32(parsingBigEndian: &input)
     let b = try UInt32(parsingBigEndian: &input)
