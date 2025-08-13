@@ -72,7 +72,7 @@ let package = Package(
       dependencies: ["BinaryParsing"],
       path: "Examples",
       swiftSettings: [
-        .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("Lifetimes")
       ]
     ),
     .executableTarget(
