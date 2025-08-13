@@ -30,7 +30,7 @@ public import Foundation
 ///     let imageData = try Data(contentsOfFile: ...)
 ///     let qoiImage = try QOI(parsing: imageData)
 public protocol ExpressibleByParsing {
-  @lifetime(&input)
+  @_lifetime(&input)
   init(parsing input: inout ParserSpan) throws(ThrownParsingError)
 }
 

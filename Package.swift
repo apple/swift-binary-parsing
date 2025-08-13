@@ -37,9 +37,8 @@ let package = Package(
       name: "BinaryParsing",
       dependencies: ["BinaryParsingMacros"],
       swiftSettings: [
-        .enableExperimentalFeature("Span"),
         .enableExperimentalFeature("ValueGenerics"),
-        .enableExperimentalFeature("LifetimeDependence"),
+        .enableExperimentalFeature("Lifetimes"),
         .strictMemorySafety(),
       ]
     ),
@@ -71,7 +70,7 @@ let package = Package(
       dependencies: ["BinaryParsing"],
       path: "Examples",
       swiftSettings: [
-        .enableExperimentalFeature("LifetimeDependence")
+        .enableExperimentalFeature("Lifetimes"),
       ]
     ),
     .executableTarget(
@@ -89,7 +88,7 @@ let package = Package(
       ],
       swiftSettings: [
         .enableUpcomingFeature("MemberImportVisibility"),
-        .enableExperimentalFeature("LifetimeDependence"),
+        .enableExperimentalFeature("Lifetimes"),
       ]
     ),
     .testTarget(

@@ -26,7 +26,7 @@ public struct ParserSpan: ~Escapable, ~Copyable {
   /// The resulting `ParserSpan` has a lifetime copied from the raw span
   /// passed as `bytes`.
   @inlinable
-  @lifetime(copy bytes)
+  @_lifetime(copy bytes)
   public init(_ bytes: RawSpan) {
     self._bytes = bytes
     self._lowerBound = 0
@@ -34,7 +34,7 @@ public struct ParserSpan: ~Escapable, ~Copyable {
   }
 
   @inlinable
-  @lifetime(copy other)
+  @_lifetime(copy other)
   init(copying other: borrowing ParserSpan) {
     self._bytes = other._bytes
     self._lowerBound = other._lowerBound
@@ -43,7 +43,7 @@ public struct ParserSpan: ~Escapable, ~Copyable {
 
   @unsafe
   @inlinable
-  @lifetime(borrow buffer)
+  @_lifetime(borrow buffer)
   public init(_unsafeBytes buffer: UnsafeRawBufferPointer) {
     self._bytes = unsafe RawSpan(_unsafeBytes: buffer)
     self._lowerBound = 0
@@ -67,7 +67,7 @@ public struct ParserSpan: ~Escapable, ~Copyable {
   /// The resulting `RawSpan` has a lifetime copied from this parser span.
   public var bytes: RawSpan {
     @inlinable
-    @lifetime(copy self)
+    @_lifetime(copy self)
     borrowing get {
       _bytes._extracting(droppingFirst: _lowerBound)._extracting(first: count)
     }
@@ -101,7 +101,7 @@ extension ParserSpan {
   ///
   /// - Precondition: `index` must in the range `startPosition...endPosition`.
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   mutating func divide(at index: Int) -> ParserSpan {
     precondition(index >= _lowerBound)
     precondition(index <= _upperBound)
@@ -117,7 +117,7 @@ extension ParserSpan {
   ///
   /// - Precondition: `offset` must in the range `0...count`.
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   mutating func divide(atOffset offset: Int) -> ParserSpan {
     divide(at: startPosition &+ offset)
   }
@@ -148,7 +148,7 @@ extension ParserSpan {
 }
 
 extension ParserSpan {
-  @lifetime(copy self)
+  @_lifetime(copy self)
   @usableFromInline
   internal mutating func _divide(
     atByteOffset count: some FixedWidthInteger
@@ -173,7 +173,7 @@ extension ParserSpan {
 
   @unsafe
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   mutating func consumeUnchecked(type: UInt8.Type = UInt8.self) -> UInt8 {
     defer { _lowerBound &+= 1 }
     return unsafe _bytes.unsafeLoad(
@@ -183,7 +183,7 @@ extension ParserSpan {
 
   @unsafe
   @inlinable
-  @lifetime(copy self)
+  @_lifetime(copy self)
   mutating func consumeUnchecked<T: FixedWidthInteger & BitwiseCopyable>(
     type: T.Type
   ) -> T {
@@ -202,7 +202,7 @@ extension ParserSpan {
   /// later stage might render the entire parsing operation a failure. Using
   /// `atomically` guarantees that the input span isn't modified in that case.
   @inlinable
-  @lifetime(&self)
+  @_lifetime(&self)
   public mutating func atomically<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {

@@ -36,7 +36,7 @@ extension FixedWidthInteger {
 extension FixedWidthInteger where Self: BitwiseCopyable {
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingBigEndian input: inout ParserSpan
@@ -45,7 +45,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _parsingBigEndian input: inout ParserSpan
   ) throws(ParsingError) {
@@ -55,7 +55,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingLittleEndian input: inout ParserSpan
@@ -64,7 +64,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(_parsingLittleEndian input: inout ParserSpan) throws(ParsingError) {
     try input._checkCount(minimum: MemoryLayout<Self>.size)
     unsafe self.init(_unchecked: (), _parsingLittleEndian: &input)
@@ -72,7 +72,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingSigned input: inout ParserSpan,
@@ -110,7 +110,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingUnsigned input: inout ParserSpan,
@@ -133,7 +133,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingSigned input: inout ParserSpan,
@@ -195,7 +195,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsingUnsigned input: inout ParserSpan,
@@ -232,7 +232,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _unchecked _: Void,
     _parsing input: inout ParserSpan,
@@ -262,7 +262,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     _parsing input: inout ParserSpan,
     endianness: Endianness,
@@ -283,7 +283,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 extension MultiByteInteger {
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(_unchecked _: Void, parsingBigEndian input: inout ParserSpan) {
     unsafe self.init(_unchecked: (), _parsingBigEndian: &input)
   }
@@ -297,14 +297,14 @@ extension MultiByteInteger {
   /// - Throws: A `ParsingError` if `input` does not have enough bytes to store
   ///   this integer type.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingBigEndian input: inout ParserSpan) throws(ParsingError) {
     try self.init(_parsingBigEndian: &input)
   }
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(_unchecked _: Void, parsingLittleEndian input: inout ParserSpan) {
     unsafe self.init(_unchecked: (), _parsingLittleEndian: &input)
   }
@@ -318,7 +318,7 @@ extension MultiByteInteger {
   /// - Throws: A `ParsingError` if `input` does not have enough bytes to store
   ///   this integer type.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingLittleEndian input: inout ParserSpan) throws(ParsingError)
   {
     try self.init(_parsingLittleEndian: &input)
@@ -326,7 +326,7 @@ extension MultiByteInteger {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(
     _unchecked _: Void, parsing input: inout ParserSpan, endianness: Endianness
   ) {
@@ -346,7 +346,7 @@ extension MultiByteInteger {
   /// - Throws: A `ParsingError` if `input` does not have enough bytes to store
   ///   this integer type.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsing input: inout ParserSpan, endianness: Endianness)
     throws(ParsingError)
   {
@@ -360,7 +360,7 @@ extension MultiByteInteger {
 extension SingleByteInteger {
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(_unchecked _: Void, parsing input: inout ParserSpan) {
     self = unsafe input.consumeUnchecked(type: Self.self)
   }
@@ -382,7 +382,7 @@ extension SingleByteInteger {
   }
 
   @unsafe
-  @lifetime(&input)
+  @_lifetime(&input)
   @available(
     *, deprecated,
     message: "This initializer should only be used for performance testing."
@@ -396,7 +396,7 @@ extension SingleByteInteger {
 extension FixedWidthInteger where Self: BitwiseCopyable {
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(
     _unchecked _: Void, parsingBigEndian input: inout ParserSpan, byteCount: Int
   ) throws(ParsingError) {
@@ -420,7 +420,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   /// - Throws: A `ParsingError` if `input` contains fewer than `byteCount`
   ///   bytes, or if the parsed value overflows this integer type.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingBigEndian input: inout ParserSpan, byteCount: Int)
     throws(ParsingError)
   {
@@ -429,7 +429,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(
     _unchecked _: Void, parsingLittleEndian input: inout ParserSpan,
     byteCount: Int
@@ -455,7 +455,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   /// - Throws: A `ParsingError` if `input` contains fewer than `byteCount`
   ///   bytes, or if the parsed value overflows this integer type.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingLittleEndian input: inout ParserSpan, byteCount: Int)
     throws(ParsingError)
   {
@@ -464,7 +464,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(
     _unchecked _: Void, parsing input: inout ParserSpan, endianness: Endianness,
     byteCount: Int
@@ -492,7 +492,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///   bytes, if the parsed value overflows this integer type, or if the
   ///   padding bytes are invalid.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan, endianness: Endianness, byteCount: Int
   ) throws(ParsingError) {
@@ -502,7 +502,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     _unchecked _: Void,
     parsing input: inout ParserSpan,
@@ -537,7 +537,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///   `storageType`, or if converting the parsed value to this integer type
   ///   overflows.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAsBigEndian storageType: T.Type
@@ -548,7 +548,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     _unchecked _: Void,
     parsing input: inout ParserSpan,
@@ -583,7 +583,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///   `storageType`, or if converting the parsed value to this integer type
   ///   overflows.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAsLittleEndian storageType: T.Type
@@ -594,7 +594,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     _unchecked _: Void,
     parsing input: inout ParserSpan,
@@ -634,7 +634,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///   `storageType`, or if converting the parsed value to this integer type
   ///   overflows.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAs storageType: T.Type,
@@ -649,7 +649,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: SingleByteInteger>(
     _unchecked _: Void,
     parsing input: inout ParserSpan,
@@ -684,7 +684,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
   ///   `storageType`, or if converting the parsed value to this integer type
   ///   overflows.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: SingleByteInteger>(
     parsing input: inout ParserSpan,
     storedAs storageType: T.Type
@@ -700,20 +700,20 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
 
 extension RawRepresentable where RawValue: MultiByteInteger {
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingBigEndian input: inout ParserSpan) throws(ParsingError) {
     self = try Self(_rawValueThrowing: .init(parsingBigEndian: &input))
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingLittleEndian input: inout ParserSpan) throws(ParsingError)
   {
     self = try Self(_rawValueThrowing: .init(parsingLittleEndian: &input))
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsing input: inout ParserSpan, endianness: Endianness)
     throws(ParsingError)
   {
@@ -725,7 +725,7 @@ extension RawRepresentable where RawValue: MultiByteInteger {
 
 extension RawRepresentable where RawValue: SingleByteInteger {
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsing input: inout ParserSpan) throws(ParsingError) {
     guard let value = try Self(rawValue: .init(_parsingBigEndian: &input))
     else {
@@ -749,7 +749,7 @@ extension RawRepresentable where RawValue: FixedWidthInteger & BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAsBigEndian storageType: T.Type
@@ -760,7 +760,7 @@ extension RawRepresentable where RawValue: FixedWidthInteger & BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAsLittleEndian storageType: T.Type
@@ -771,7 +771,7 @@ extension RawRepresentable where RawValue: FixedWidthInteger & BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: MultiByteInteger>(
     parsing input: inout ParserSpan,
     storedAs: T.Type,
@@ -783,7 +783,7 @@ extension RawRepresentable where RawValue: FixedWidthInteger & BitwiseCopyable {
   }
 
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init<T: SingleByteInteger>(
     parsing input: inout ParserSpan,
     storedAs: T.Type

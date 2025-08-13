@@ -39,7 +39,7 @@ public struct DeferredBPList {
       self.pos = pos
     }
 
-    @lifetime(&input)
+    @_lifetime(&input)
     @usableFromInline
     init(parsing input: inout ParserSpan, trailingObject: BPList.Trailer) throws
     {
@@ -107,7 +107,7 @@ extension DeferredBPList {
       }
     }
 
-    @lifetime(&input)
+    @_lifetime(&input)
     init(
       parsingIndexAndObject input: inout ParserSpan,
       trailingObject: BPList.Trailer
@@ -119,7 +119,7 @@ extension DeferredBPList {
       self = try Object(parsing: &objectBuffer, trailingObject: trailingObject)
     }
 
-    @lifetime(&input)
+    @_lifetime(&input)
     @usableFromInline
     init(parsing input: inout ParserSpan, trailingObject: BPList.Trailer) throws
     {

@@ -20,7 +20,7 @@ extension Data {
   ///
   /// - Parameter input: The `ParserSpan` to consume.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingRemainingBytes input: inout ParserSpan) {
     defer { _ = input.divide(atOffset: input.count) }
     self = unsafe input.withUnsafeBytes { buffer in
@@ -37,7 +37,7 @@ extension Data {
   /// - Throws: A `ParsingError` if `input` does not have at least `byteCount`
   ///   bytes remaining.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsing input: inout ParserSpan, byteCount: Int)
     throws(ParsingError)
   {

@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-@lifetime(&input)
+@_lifetime(&input)
 public func _loadAndCheckDirectBytes<
   T: FixedWidthInteger & MultiByteInteger & BitwiseCopyable
 >(
@@ -23,7 +23,7 @@ public func _loadAndCheckDirectBytes<
   }
 }
 
-@lifetime(&input)
+@_lifetime(&input)
 public func _loadAndCheckDirectBytesByteOrder<
   T: FixedWidthInteger & MultiByteInteger & BitwiseCopyable
 >(

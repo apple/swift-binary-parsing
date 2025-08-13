@@ -51,7 +51,7 @@ public struct InterfaceDescription {
     self.options = options
   }
 
-  @lifetime(&input)
+  @_lifetime(&input)
   init(parsing input: inout ParserSpan, endianness: Endianness) throws {
     //     0                   1                   2                   3
     //     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -90,7 +90,7 @@ public struct InterfaceDescription {
 }
 
 extension InterfaceDescription.Option: BlockOption {
-  @lifetime(&input)
+  @_lifetime(&input)
   init(
     parsing input: inout ParserSpan, for optionCode: UInt16,
     endianness: Endianness

@@ -15,7 +15,7 @@ extension String {
   /// The bytes of the string and the NUL are all consumed from `input`. This
   /// initializer throws an error if `input` does not contain a NUL byte.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingNulTerminated input: inout ParserSpan) throws(ParsingError)
   {
     guard
@@ -35,7 +35,7 @@ extension String {
   /// code units are repaired by replacing with the Unicode replacement
   /// character `U+FFFD`.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingUTF8 input: inout ParserSpan) {
     let stringBytes = input.divide(at: input.endPosition)
     self = unsafe stringBytes.withUnsafeBytes { buffer in
@@ -50,7 +50,7 @@ extension String {
   /// required by `count`. Any invalid UTF-8 code units are repaired by
   /// replacing with the Unicode replacement character `U+FFFD`.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingUTF8 input: inout ParserSpan, count: Int)
     throws(ParsingError)
   {
@@ -60,7 +60,7 @@ extension String {
 
   @unsafe
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   internal init(_uncheckedParsingUTF16 input: inout ParserSpan)
     throws(ParsingError)
   {
@@ -78,7 +78,7 @@ extension String {
   /// units or incomplete surrogate pairs are repaired by replacing with the
   /// Unicode replacement character `U+FFFD`.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingUTF16 input: inout ParserSpan) throws(ParsingError) {
     guard input.count.isMultiple(of: 2) else {
       throw ParsingError(status: .invalidValue, location: input.startPosition)
@@ -101,7 +101,7 @@ extension String {
   /// - Throws: A `ParsingError` if `input` doesn't have at least
   ///   `2 * codeUnitCount` bytes remaining.
   @inlinable
-  @lifetime(&input)
+  @_lifetime(&input)
   public init(parsingUTF16 input: inout ParserSpan, codeUnitCount: Int)
     throws(ParsingError)
   {
