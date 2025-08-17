@@ -20,9 +20,9 @@ struct StringifyMacroSwiftTestingTests {
   @Test
   func magicNumberString() {
     assertMacro {
-      #"try #magicNumber("qoif", parsing: &input)"#
+      #"try #magicNumber("qoif", parsing: &data)"#
     } expansion: {
-      "try _loadAndCheckDirectBytes(parsing: &input, bigEndianValue: 0x716f6966 as UInt32)"
+      "try _loadAndCheckDirectBytes(parsing: &data, bigEndianValue: 0x716f6966 as UInt32)"
     }
   }
 }
