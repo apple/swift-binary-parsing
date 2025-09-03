@@ -172,7 +172,7 @@ struct ThrowingOperationsTests {
       }
     }
   }
-  
+
   @Test(arguments: [[0xFE, 0xFF, 0xFF, 0x7F]])
   func tooManyPaddingBytesLEB128(_ input: [Int]) throws {
     let lebEncoded = input.map(UInt8.init)
@@ -180,7 +180,7 @@ struct ThrowingOperationsTests {
       try lebEncoded.withParserSpan { try Int16(parsingLEB128: &$0) }
     }
   }
-  
+
   @Test func overflowLEB128() async throws {
     func overflowTest<
       T: FixedWidthInteger & BitwiseCopyable, U: MultiByteInteger

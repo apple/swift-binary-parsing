@@ -108,7 +108,7 @@ extension Array where Element == UInt8 {
       Swift.withUnsafeBytes(of: value.littleEndian, Array.init)
       + Array(repeating: paddingByte, count: paddingCount)
   }
-  
+
   init<T: FixedWidthInteger>(encodingLEB128 value: T) {
     var out: [UInt8] = []
     if T.isSigned {

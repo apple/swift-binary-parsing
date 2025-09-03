@@ -696,7 +696,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     }
     self = try Self(_throwing: T(truncatingIfNeeded: result))
   }
-  
+
   /// Creates an integer by parsing a little-endian base 128 (LEB128) encoded value of this type's size
   /// from the start of the given parser span.
   ///
@@ -740,7 +740,8 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
         if Self.isSigned {
           let signPadding: UInt8 = (~allowedMask) & 0x7F
           guard extraBits == signPadding || extraBits == 0 else {
-            throw ParsingError(status: .invalidValue, location: input.startPosition)
+            throw ParsingError(
+              status: .invalidValue, location: input.startPosition)
           }
         } else {
           guard extraBits == 0 else {
