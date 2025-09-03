@@ -52,7 +52,9 @@ public struct MagicNumberStringMacro: ExpressionMacro {
     }
 
     var parsingExpr = "input"
-    if let parsingArg = node.arguments.first(where: { $0.label?.text == "parsing" }) {
+    if let parsingArg = node.arguments.first(where: {
+      $0.label?.text == "parsing"
+    }) {
       parsingExpr = parsingArg.expression.description
     }
 
