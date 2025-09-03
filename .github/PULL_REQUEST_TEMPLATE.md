@@ -17,5 +17,6 @@ Replace this paragraph with a description of your changes and rationale. Provide
 ### Checklist
 - [ ] I've added at least one test that validates that my change is working, if appropriate
 - [ ] I've followed the code style of the rest of the project
+- [ ] I've run `Scripts/format.sh` to correctly format my change
 - [ ] I've read the [Contribution Guidelines](https://github.com/apple/swift-binary-parsing/blob/main/CONTRIBUTING.md)
 - [ ] I've updated the documentation if necessary
