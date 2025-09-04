@@ -51,9 +51,16 @@ public struct MagicNumberStringMacro: ExpressionMacro {
       return ""
     }
 
+    var parsingExpr = "input"
+    if let parsingArg = node.arguments.first(where: {
+      $0.label?.text == "parsing"
+    }) {
+      parsingExpr = parsingArg.expression.description
+    }
+
     return """
       _loadAndCheckDirectBytes(\
-      parsing: &input, \
+      parsing: \(raw: parsingExpr), \
       bigEndianValue: 0x\(raw: String(integerValue, radix: 16)) as \(raw: integerType))
       """
   }
