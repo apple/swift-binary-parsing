@@ -108,6 +108,35 @@ extension Array where Element == UInt8 {
       Swift.withUnsafeBytes(of: value.littleEndian, Array.init)
       + Array(repeating: paddingByte, count: paddingCount)
   }
+
+  init<T: FixedWidthInteger>(encodingLEB128 value: T) {
+    var out: [UInt8] = []
+    if T.isSigned {
+      var v = value
+      while true {
+        var byte = UInt8(truncatingIfNeeded: v)
+        v >>= 6  // Keep the sign bit
+        let done = v == 0 || v == -1
+        if done {
+          byte &= 0x7F
+        } else {
+          v >>= 1
+          byte |= 0x80
+        }
+        out.append(byte)
+        if done { break }
+      }
+    } else {
+      var v = value
+      repeat {
+        var byte = UInt8(truncatingIfNeeded: v)
+        v >>= 7
+        if v != 0 { byte |= 0x80 }
+        out.append(byte)
+      } while v != 0
+    }
+    self = out
+  }
 }
 
 /// A seeded random number generator type.

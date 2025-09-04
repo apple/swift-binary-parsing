@@ -172,4 +172,37 @@ struct ThrowingOperationsTests {
       }
     }
   }
+
+  @Test(arguments: [[0xFE, 0xFF, 0xFF, 0x7F]])
+  func tooManyPaddingBytesLEB128(_ input: [Int]) throws {
+    let lebEncoded = input.map(UInt8.init)
+    #expect(throws: ParsingError.self) {
+      try lebEncoded.withParserSpan { try Int16(parsingLEB128: &$0) }
+    }
+  }
+
+  @Test func overflowLEB128() async throws {
+    func overflowTest<
+      T: FixedWidthInteger & BitwiseCopyable, U: MultiByteInteger
+    >(
+      _ type: T.Type,
+      value: U,
+    ) throws {
+      let lebEncoded: [UInt8] = .init(encodingLEB128: value)
+      #expect(throws: ParsingError.self) {
+        try lebEncoded.withParserSpan { try T(parsingLEB128: &$0) }
+      }
+    }
+    for i in 1...100 {
+      try overflowTest(Int8.self, value: Int16(Int8.min) - Int16(i))
+      try overflowTest(Int8.self, value: Int16(Int8.max) + Int16(i))
+      try overflowTest(UInt8.self, value: UInt16(UInt8.max) + UInt16(i))
+      try overflowTest(Int16.self, value: Int32(Int16.min) - Int32(i))
+      try overflowTest(Int16.self, value: Int32(Int16.max) + Int32(i))
+      try overflowTest(UInt16.self, value: UInt32(UInt16.max) + UInt32(i))
+      try overflowTest(Int32.self, value: Int64(Int32.min) - Int64(i))
+      try overflowTest(Int32.self, value: Int64(Int32.max) + Int64(i))
+      try overflowTest(UInt32.self, value: UInt64(UInt32.max) + UInt64(i))
+    }
+  }
 }

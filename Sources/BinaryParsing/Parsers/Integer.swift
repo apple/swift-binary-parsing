@@ -696,6 +696,86 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     }
     self = try Self(_throwing: T(truncatingIfNeeded: result))
   }
+
+  /// Creates an integer by parsing a little-endian base 128 (LEB128) encoded value of this type's size
+  /// from the start of the given parser span.
+  ///
+  /// - Parameter input: The `ParserSpan` to parse from. If parsing succeeds,
+  ///   the start position of `input` is moved forward by the number of bytes consumed. This will
+  ///   usually be `ceil(N / 7)` where N is the minimum number of bits required to encode
+  ///   this integer. In rare cases an encoder may produce valid but unnecessary padding bytes,
+  ///   in which case the number of bytes consumed can be up to `ceil(bitWidth / 7)` where
+  ///   bitWidth is the  full width of this type.
+  /// - Throws: A `ParsingError` if `input` overflows the max value of  this integer type,
+  ///   or if the maximum byte count for this type's size has been consumed.
+  @inlinable
+  @_lifetime(&input)
+  public init(parsingLEB128 input: inout ParserSpan) throws(ParsingError) {
+    var result: Self = 0
+    var shift = 0
+    var byte: UInt8 = 0
+    while true {
+      byte = try UInt8(parsing: &input)
+      let lowBits = byte & 0x7F
+      let availableBits = Self.bitWidth - shift
+      let isFinalByte = (byte & 0x80) == 0
+      if availableBits <= 0 {
+        let maxBytes = (Self.bitWidth + 6) / 7
+        let byteCount = shift / 7 + 1
+        if byteCount > maxBytes {
+          throw ParsingError(
+            status: .invalidValue,
+            location: input.startPosition)
+        }
+        // Allow padding bytes that do not affect the value
+        let expectedBits: UInt8 = (result < 0) ? 0x7F : 0x00
+        guard lowBits == expectedBits else {
+          throw ParsingError(
+            status: .invalidValue,
+            location: input.startPosition)
+        }
+      } else if availableBits < 7 {
+        let allowedMask: UInt8 = (1 &<< availableBits) &- 1
+        let extraBits: UInt8 = lowBits & ~allowedMask
+        if Self.isSigned {
+          let signPadding: UInt8 = (~allowedMask) & 0x7F
+          guard extraBits == signPadding || extraBits == 0 else {
+            throw ParsingError(
+              status: .invalidValue, location: input.startPosition)
+          }
+        } else {
+          guard extraBits == 0 else {
+            throw ParsingError(
+              status: .invalidValue,
+              location: input.startPosition)
+          }
+        }
+        let part = Self(lowBits & allowedMask) << shift
+        result |= part
+        if Self.isSigned && isFinalByte {
+          let finalByteNegative = (byte & 0x40) != 0
+          let resultNegative = result & (1 << (Self.bitWidth - 1)) != 0
+          if finalByteNegative != resultNegative {
+            // The value's sign has flipped - it has wrapped around.
+            throw ParsingError(
+              status: .invalidValue,
+              location: input.startPosition)
+          }
+        }
+      } else {
+        result |= Self(lowBits) &<< shift
+      }
+      shift += 7
+      if isFinalByte { break }
+    }
+    if Self.isSigned {
+      // Sign-extend if needed
+      if shift < Self.bitWidth && (byte & 0x40) != 0 {
+        result |= (~0) << shift
+      }
+    }
+    self = result
+  }
 }
 
 extension RawRepresentable where RawValue: MultiByteInteger {
