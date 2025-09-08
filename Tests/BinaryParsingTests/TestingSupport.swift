@@ -145,8 +145,9 @@ extension Array where Element == UInt8 {
       bytes in
       self.append(contentsOf: bytes)
     }
-    let signAndExponent =
-      value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
+    let signAndExponent = UInt16(
+      truncatingIfNeeded:
+        value.exponentBitPattern | ((value.sign == .minus ? 1 : 0) << 15))
     Swift.withUnsafeBytes(of: signAndExponent.littleEndian) { bytes in
       self.append(contentsOf: bytes)
     }
@@ -154,8 +155,9 @@ extension Array where Element == UInt8 {
 
   init(bigEndian value: Float80) {
     self = []
-    let signAndExponent =
-      value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
+    let signAndExponent = UInt16(
+      truncatingIfNeeded:
+        value.exponentBitPattern | ((value.sign == .minus ? 1 : 0) << 15))
     Swift.withUnsafeBytes(of: signAndExponent.bigEndian) { bytes in
       self.append(contentsOf: bytes)
     }

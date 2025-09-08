@@ -34,6 +34,14 @@ enum Interesting {
     .nan, .signalingNaN,
   ]
 
+  static let float80OneLE: [UInt8] = [
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xff, 0x3f,
+  ]
+
+  static let float80OneBE: [UInt8] = [
+    0x3f, 0xff, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  ]
+
   #if !(os(Windows) || os(Android) || ($Embedded && !os(Linux) && !(os(macOS) || os(iOS) || os(watchOS) || os(tvOS)))) && (arch(i386) || arch(x86_64))
   static let float80s: [Float80] = [
     0.0, 1.0, 1000,
@@ -182,7 +190,7 @@ struct FloatingPointTests {
           #expect(value2.isSignalingNaN)
         }
       } else {
-        #expect(value1 == value)
+        #expect(value1 == value, "\(1)")
         #expect(value2 == value)
       }
     }
@@ -194,13 +202,25 @@ struct FloatingPointTests {
   }
 
   #if !(os(Windows) || os(Android) || ($Embedded && !os(Linux) && !(os(macOS) || os(iOS) || os(watchOS) || os(tvOS)))) && (arch(i386) || arch(x86_64))
+  @Test
+  func staticFloat80() throws {
+    let leValue = try Interesting.float80OneLE.withParserSpan(
+      Float80.init(parsingLittleEndian:))
+    let beValue = try Interesting.float80OneBE.withParserSpan(
+      Float80.init(parsingBigEndian:))
+
+    #expect(leValue == 1.0)
+    #expect(beValue == 1.0)
+  }
+
   @Test(arguments: Interesting.float80s)
   func testFloat80RoundTrip(_ value: Float80) throws {
     let bytesLE = Array(littleEndian: value)
     let bytesBE = Array(bigEndian: value)
 
     do {
-      let value1 = try bytesLE.withParserSpan(Float80.init(parsingLittleEndian:))
+      let value1 = try bytesLE.withParserSpan(
+        Float80.init(parsingLittleEndian:))
       let value2 = try bytesLE.withParserSpan { input in
         try Float80(parsing: &input, endianness: .little)
       }
