@@ -196,13 +196,13 @@ struct FloatingPointTests {
   #if !(os(Windows) || os(Android) || ($Embedded && !os(Linux) && !(os(macOS) || os(iOS) || os(watchOS) || os(tvOS)))) && (arch(i386) || arch(x86_64))
   @Test(arguments: Interesting.float80s)
   func testFloat80RoundTrip(_ value: Float80) throws {
-    let bytesLE = Array(littleEndian: value.bitPattern)
-    let bytesBE = Array(bigEndian: value.bitPattern)
+    let bytesLE = Array(littleEndian: value)
+    let bytesBE = Array(bigEndian: value)
 
     do {
-      let value1 = try bytesLE.withParserSpan(Double.init(parsingLittleEndian:))
+      let value1 = try bytesLE.withParserSpan(Float80.init(parsingLittleEndian:))
       let value2 = try bytesLE.withParserSpan { input in
-        try Double(parsing: &input, endianness: .little)
+        try Float80(parsing: &input, endianness: .little)
       }
 
       if value.isNaN {
@@ -219,9 +219,9 @@ struct FloatingPointTests {
     }
 
     do {
-      let value1 = try bytesBE.withParserSpan(Double.init(parsingBigEndian:))
+      let value1 = try bytesBE.withParserSpan(Float80.init(parsingBigEndian:))
       let value2 = try bytesBE.withParserSpan { input in
-        try Double(parsing: &input, endianness: .big)
+        try Float80(parsing: &input, endianness: .big)
       }
 
       if value.isNaN {
@@ -239,7 +239,7 @@ struct FloatingPointTests {
 
     // Check negative version of all values as well.
     if value.sign == .plus {
-      try testDoubleRoundTrip(-value)
+      try testFloat80RoundTrip(-value)
     }
   }
   #endif
