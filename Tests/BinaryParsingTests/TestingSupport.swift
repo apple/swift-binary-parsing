@@ -137,14 +137,16 @@ extension Array where Element == UInt8 {
     }
     self = out
   }
-  
-#if !(os(Windows) || os(Android) || ($Embedded && !os(Linux) && !(os(macOS) || os(iOS) || os(watchOS) || os(tvOS)))) && (arch(i386) || arch(x86_64))
+
+  #if !(os(Windows) || os(Android) || ($Embedded && !os(Linux) && !(os(macOS) || os(iOS) || os(watchOS) || os(tvOS)))) && (arch(i386) || arch(x86_64))
   init(littleEndian value: Float80) {
     self = []
-    Swift.withUnsafeBytes(of: value.significandBitPattern.littleEndian) { bytes in
+    Swift.withUnsafeBytes(of: value.significandBitPattern.littleEndian) {
+      bytes in
       self.append(contentsOf: bytes)
     }
-    let signAndExponent = value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
+    let signAndExponent =
+      value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
     Swift.withUnsafeBytes(of: signAndExponent.littleEndian) { bytes in
       self.append(contentsOf: bytes)
     }
@@ -152,7 +154,8 @@ extension Array where Element == UInt8 {
 
   init(bigEndian value: Float80) {
     self = []
-    let signAndExponent = value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
+    let signAndExponent =
+      value.exponentBitPattern | (value.sign == .minus ? 1 : 0 << 31)
     Swift.withUnsafeBytes(of: signAndExponent.bigEndian) { bytes in
       self.append(contentsOf: bytes)
     }
@@ -160,7 +163,7 @@ extension Array where Element == UInt8 {
       self.append(contentsOf: bytes)
     }
   }
-#endif
+  #endif
 }
 
 /// A seeded random number generator type.
