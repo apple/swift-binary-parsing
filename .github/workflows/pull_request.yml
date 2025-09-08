@@ -29,6 +29,7 @@ jobs:
       windows_exclude_swift_versions: "[{\"swift_version\": \"5.9\"}, {\"swift_version\": \"6.0\"}, {\"swift_version\": \"6.1\"}, {\"swift_version\": \"nightly\"}, {\"swift_version\": \"nightly-6.1\"}]"
       enable_macos_checks: false
       enable_windows_checks: false
+      linux_build_command: swift test --disable-experimental-prebuilts  # prebuilt swift-syntax not building
 
   soundness:
     name: Soundness
