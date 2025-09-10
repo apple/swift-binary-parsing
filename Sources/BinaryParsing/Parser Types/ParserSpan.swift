@@ -69,7 +69,8 @@ public struct ParserSpan: ~Escapable, ~Copyable {
     @inlinable
     @_lifetime(copy self)
     borrowing get {
-      _bytes._extracting(droppingFirst: _lowerBound)._extracting(first: count)
+      unsafe _bytes.extracting(
+        unchecked: Range(uncheckedBounds: (_lowerBound, _upperBound)))
     }
   }
 }
@@ -129,6 +130,12 @@ extension ParserSpan {
     return unsafe _bytes.unsafeLoad(
       fromUncheckedByteOffset: _lowerBound &+ i,
       as: UInt8.self)
+  }
+
+  @usableFromInline
+  @_lifetime(copy self)
+  consuming func extracted() -> ParserSpan {
+    Self(bytes)
   }
 }
 
