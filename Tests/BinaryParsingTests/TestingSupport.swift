@@ -139,6 +139,19 @@ extension Array where Element == UInt8 {
   }
 }
 
+/// Returns true if an inline array and a sequence of the same element are equivalent.
+@available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
+func == <T: Equatable, let n: Int>(
+  lhs: InlineArray<n, T>, rhs: some Sequence<T>
+) -> Bool {
+  var iterator = rhs.makeIterator()
+  for i in 0..<n {
+    guard lhs[i] == iterator.next() else { return false }
+  }
+  guard iterator.next() == nil else { return false }
+  return true
+}
+
 /// A seeded random number generator type.
 struct RapidRandom: RandomNumberGenerator {
   private var state: UInt64
