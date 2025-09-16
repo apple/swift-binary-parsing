@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BD5EDA2C-FBC4-4665-841C-3B6790EA8202",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:BinaryParsing.xcodeproj",
+        "identifier" : "7D489E4629CE969D00499B21",
+        "name" : "BinaryParsingTests"
+      }
+    }
+  ],
+  "version" : 1
+}
