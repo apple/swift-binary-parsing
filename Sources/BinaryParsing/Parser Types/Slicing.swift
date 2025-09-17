@@ -9,6 +9,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+// MARK: ParserSpan Slicing
+
 extension ParserSpan {
   /// Returns a new parser span covering the specified number of bytes from the
   /// start of this parser span, shrinking this parser span by the same amount.
@@ -35,7 +37,7 @@ extension ParserSpan {
       throw ParsingError(status: .invalidValue, location: startPosition)
     }
     guard count >= byteCount else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      throw ParsingError(status: .insufficientData, location: startPosition)
     }
     return divide(atOffset: byteCount)
   }
@@ -74,8 +76,9 @@ extension ParserSpan {
     }
     return try _divide(atByteOffset: byteCount)
   }
-
 }
+
+// MARK: Range Slicing
 
 extension ParserSpan {
   /// Returns a parser range covering the specified number of bytes from the
@@ -154,6 +157,8 @@ extension ParserSpan {
   }
 }
 
+// MARK: UTF8Span
+
 extension ParserSpan {
   /// Returns a `UTF8Span` covering the specified number of bytes from the
   /// start of this parser span, shrinking this parser span by the same amount.
@@ -186,5 +191,91 @@ extension ParserSpan {
     } catch {
       throw ParsingError(status: .userError, location: startPosition)
     }
+  }
+}
+
+// MARK: Extracting
+
+extension ParserSpan {
+  /// Extracts and returns a new parser span covering the specified number of
+  /// bytes from the start of this parser span, shrinking this parser span by
+  /// the same amount.
+  ///
+  /// Use `extract(byteCount:)` to retrieve a separate span for a parsing
+  /// sub-task when you know the size of the task. For example, each chunk in
+  /// the PNG format begins with an identifier and the size of the chunk, in
+  /// bytes. A PNG chunk parser could use this method to slice the correct size
+  /// for each chunk, and limit parsing to within the resulting span.
+  ///
+  /// An _extracted_ parser span doesn't retain information about the bounds of
+  /// the original span, unlike a _slice_. If you need to seek beyond the
+  /// immediate bounds of the returned span, use the ``sliceSpan(byteCount:)``
+  /// method instead.
+  ///
+  /// - Parameter byteCount: The number of bytes to include in the resulting
+  ///   span. `byteCount` must be non-negative, and less than or equal to the
+  ///   number of bytes remaining in the span.
+  /// - Returns: A new parser span covering `byteCount` bytes. The returned
+  ///   parser span has a `startPosition` of zero and an `endPosition` equal
+  ///   to `byteCount`.
+  /// - Throws: A `ParsingError` if `byteCount` cannot be represented as an
+  ///   `Int`, if it's negative, or if there aren't enough bytes in the
+  ///   original span.
+  @inlinable
+  @_lifetime(copy self)
+  public mutating func extract(byteCount: some FixedWidthInteger)
+    throws(ParsingError) -> ParserSpan
+  {
+    try sliceSpan(byteCount: byteCount).extracted()
+  }
+
+  /// Extracts and returns a new parser span covering the specified number of
+  /// bytes calculated as the product of object count and stride from the start
+  /// of this parser span, shrinking this parser span by the same amount.
+  ///
+  /// Use `extract(objectStride:objectCount:)` when you need to retrieve a
+  /// span for parsing a collection of fixed-size objects. This is particularly
+  /// useful when parsing arrays of binary data with known element sizes. For
+  /// example, if you're parsing an array of 4-byte integers and know there are
+  /// 10 elements, you can use:
+  ///
+  ///     let intArraySpan = try span.extract(objectStride: 4, objectCount: 10)
+  ///
+  /// An _extracted_ parser span doesn't retain information about the bounds of
+  /// the original span, unlike a _slice_. If you need to seek beyond the
+  /// immediate bounds of the returned span, use the ``sliceSpan(objectStride:objectCount:)``
+  /// method instead.
+  ///
+  /// - Parameters:
+  ///   - objectStride: The size in bytes of each object in the collection.
+  ///   - objectCount: The number of objects to include in the resulting range.
+  /// - Returns: A parser range covering `objectStride * objectCount` bytes,
+  ///   with a `startPosition` of zero.
+  /// - Throws: A `ParsingError` if either `objectStride` or `objectCount`
+  ///   cannot be represented as an `Int`, if their product would overflow, or
+  ///   if the product is not in the range `0...count`.
+  @inlinable
+  @_lifetime(copy self)
+  public mutating func extract(
+    objectStride: some FixedWidthInteger,
+    objectCount: some FixedWidthInteger
+  ) throws(ParsingError) -> ParserSpan {
+    try sliceSpan(objectStride: objectStride, objectCount: objectCount)
+      .extracted()
+  }
+
+  /// Extracts and returns a parser span covering the remaining bytes in this
+  /// parser span.
+  ///
+  /// An _extracted_ parser span doesn't retain information about the bounds of
+  /// the original span, unlike a _slice_.
+  ///
+  /// - Returns: A parser range covering the rest of the memory represented
+  ///   by this parser span, with a `startPosition` of zero and `endPosition`
+  ///   equal to the remaining number of bytes.
+  @inlinable
+  @_lifetime(copy self)
+  public mutating func extractRemaining() -> ParserSpan {
+    divide(atOffset: self.count).extracted()
   }
 }
