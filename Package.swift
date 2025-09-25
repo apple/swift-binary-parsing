@@ -104,6 +104,7 @@ let package = Package(
     .testTarget(
       name: "BinaryParsingMacrosTests",
       dependencies: [
+        "BinaryParsing",
         "BinaryParsingMacros",
         .product(name: "SwiftSyntax", package: "swift-syntax"),
         .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),

@@ -68,8 +68,9 @@ public func _loadAndCheckDirectBytesByteOrder<
 ///
 /// Requires macOS 26+, iOS 26+, watchOS 26+, tvOS 26+, visionOS 26+ due to `InlineArray` usage.
 ///
-/// - Parameter input: An inout `ParserSpan` to parse bytes from
-/// - Parameter expectedBytes: An `InlineArray<N, UInt8>` containing the expected byte values
+/// - Parameters:
+///   - input: An inout `ParserSpan` to parse bytes from
+///   - expectedBytes: An `InlineArray<N, UInt8>` containing the expected byte values
 /// - Throws: `ParsingError` with `.invalidValue` status if bytes don't match, or propagates
 ///   any parsing errors from `InlineArray.init(parsing:)`
 @available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)

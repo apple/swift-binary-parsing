@@ -68,8 +68,9 @@ public macro magicNumber(_ code: String, parsing input: inout ParserSpan) =
 /// - `#magicNumber(_:parsing:)` for 2/4/8 byte magic numbers using fixed-width integers
 /// - `InlineArray` for the underlying compile-time array implementation
 ///
-/// - Parameter code: An ASCII string literal representing the expected magic bytes
-/// - Parameter input: An inout `ParserSpan` to parse from
+/// - Parameters:
+///   - code: An ASCII string literal representing the expected magic bytes
+///   - input: An inout `ParserSpan` to parse from
 /// - Throws: `ParsingError` if parsing fails or bytes don't match
 @freestanding(expression)
 public macro magic(_ code: String, parsing input: inout ParserSpan) =
