@@ -41,3 +41,17 @@ public func _loadAndCheckDirectBytesByteOrder<
       location: input.startPosition)
   }
 }
+
+@available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
+@_lifetime(&input)
+@inlinable
+public func _loadAndCheckInlineArrayBytes<let N: Int>(
+  parsing input: inout ParserSpan,
+  expectedBytes: InlineArray<N, UInt8>
+) throws(ParsingError) {
+  let parsedBytes = try? InlineArray<N, UInt8>(parsing: &input)
+  guard parsedBytes == expectedBytes else {
+    throw ParsingError(
+      status: .invalidValue, location: input.startPosition)
+  }
+}

@@ -17,5 +17,6 @@ struct ParserMacroPlugin: CompilerPlugin {
   var providingMacros: [Macro.Type] = [
     ParserMacro.self,
     MagicNumberStringMacro.self,
+    MagicMacro.self,
   ]
 }

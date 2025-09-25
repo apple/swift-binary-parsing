@@ -173,4 +173,35 @@ struct InlineArrayParsingTests {
       #expect(parsedArray == expectedArray)
     }
   }
+
+  @available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
+  @Test
+  func magicFunctionMatchingBytes() throws {
+    let correctBytes: [UInt8] = [116, 101, 115, 116]  // "test"
+
+    try correctBytes.withParserSpan { span in
+      let expectedArray: InlineArray<4, UInt8> = [116, 101, 115, 116]
+      // This should succeed - bytes match
+      try _loadAndCheckInlineArrayBytes(
+        parsing: &span, expectedBytes: expectedArray)
+      #expect(span.count == 0)
+    }
+  }
+
+  @available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
+  @Test
+  func magicFunctionMismatchedBytes() throws {
+    let wrongBytes: [UInt8] = [74, 80, 69, 71]  // "JPEG"
+
+    wrongBytes.withParserSpan { span in
+      let expectedArray: InlineArray<4, UInt8> = [116, 101, 115, 116]
+      // This should fail - bytes don't match
+      #expect(throws: ParsingError.self) {
+        try _loadAndCheckInlineArrayBytes(
+          parsing: &span, expectedBytes: expectedArray)
+      }
+      // Span should be consumed even though comparison failed
+      #expect(span.count == 0)
+    }
+  }
 }

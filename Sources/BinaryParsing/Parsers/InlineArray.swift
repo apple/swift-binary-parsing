@@ -28,6 +28,21 @@ extension InlineArray where Element == UInt8 {
 }
 
 @available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
+extension InlineArray: @retroactive Equatable where Element == UInt8 {
+  @inlinable
+  public static func == (
+    lhs: InlineArray<count, UInt8>, rhs: InlineArray<count, UInt8>
+  ) -> Bool {
+    for i in 0..<count {
+      if lhs[i] != rhs[i] {
+        return false
+      }
+    }
+    return true
+  }
+}
+
+@available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
 extension InlineArray where Element: ~Copyable {
   /// Creates a new array by parsing the specified number of elements from the given
   /// parser span, using the provided closure for parsing.

@@ -12,3 +12,7 @@
 @freestanding(expression)
 public macro magicNumber(_ code: String, parsing input: inout ParserSpan) =
   #externalMacro(module: "BinaryParsingMacros", type: "MagicNumberStringMacro")
+
+@freestanding(expression)
+public macro magic(_ code: String, parsing input: inout ParserSpan) =
+  #externalMacro(module: "BinaryParsingMacros", type: "MagicMacro")
