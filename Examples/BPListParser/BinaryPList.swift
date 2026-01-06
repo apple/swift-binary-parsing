@@ -83,7 +83,6 @@ extension BPList.Trailer {
 
 extension Int {
   @inlinable
-  @_lifetime(&input)
   init(parsingBPListCount input: inout ParserSpan, countMarker: UInt8) throws {
     if countMarker != 0xf {
       self = Int(countMarker)
@@ -146,7 +145,6 @@ extension BPList {
     }
 
     @inlinable
-    @_lifetime(&input)
     init(parsingIndexAndObject input: inout ParserSpan, trailingObject: Trailer)
       throws
     {
@@ -158,7 +156,6 @@ extension BPList {
     }
 
     @inlinable
-    @_lifetime(&input)
     init(parsing input: inout ParserSpan, trailingObject: Trailer) throws {
       let marker = try UInt8(parsing: &input)
 

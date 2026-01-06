@@ -25,7 +25,6 @@ extension Range where Bound: FixedWidthInteger {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and count.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
     parser: (inout ParserSpan) throws -> Bound
@@ -53,7 +52,6 @@ extension Range where Bound: FixedWidthInteger {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and count.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndCount input: inout ParserSpan,
     parser: (inout ParserSpan) throws(ParsingError) -> Bound
@@ -76,7 +74,6 @@ extension ClosedRange where Bound: FixedWidthInteger {
     message:
       "The behavior of this parser is unintuitive; instead, parse the start and count separately, then form the end of the closed range."
   )
-  @_lifetime(&_input)
   public init(
     parsingStartAndCount _input: inout ParserSpan,
     parser: (inout ParserSpan) throws -> Bound
@@ -97,7 +94,6 @@ extension ClosedRange where Bound: FixedWidthInteger {
     message:
       "The behavior of this parser is unintuitive; instead, parse the start and count separately, then form the end of the closed range."
   )
-  @_lifetime(&_input)
   public init(
     parsingStartAndCount _input: inout ParserSpan,
     parser: (inout ParserSpan) throws(ParsingError) -> Bound
@@ -129,7 +125,6 @@ extension Range {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and end.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
     boundsParser parser: (inout ParserSpan) throws -> Bound
@@ -157,7 +152,6 @@ extension Range {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and end.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
     boundsParser parser: (inout ParserSpan) throws(ParsingError) -> Bound
@@ -187,7 +181,6 @@ extension ClosedRange {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and end.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
     boundsParser parser: (inout ParserSpan) throws -> Bound
@@ -215,7 +208,6 @@ extension ClosedRange {
   ///   - input: The `ParserSpan` to parse from.
   ///   - parser: The closure to use when parsing the start and end.
   /// - Throws: An error if `parser` throws an error.
-  @_lifetime(&input)
   public init(
     parsingStartAndEnd input: inout ParserSpan,
     boundsParser parser: (inout ParserSpan) throws(ParsingError) -> Bound

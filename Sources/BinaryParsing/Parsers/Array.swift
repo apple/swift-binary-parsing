@@ -17,7 +17,6 @@ extension Array where Element == UInt8 {
   ///
   /// - Parameter input: The `ParserSpan` to consume.
   @inlinable
-  @_lifetime(&input)
   public init(parsingRemainingBytes input: inout ParserSpan) {
     defer { _ = input.divide(atOffset: input.count) }
     self = unsafe input.withUnsafeBytes { buffer in
@@ -34,7 +33,6 @@ extension Array where Element == UInt8 {
   /// - Throws: A `ParsingError` if `input` does not have at least `byteCount`
   ///   bytes remaining.
   @inlinable
-  @_lifetime(&input)
   public init(parsing input: inout ParserSpan, byteCount: Int)
     throws(ParsingError)
   {
@@ -74,7 +72,6 @@ extension Array {
   /// - Throws: An error if one is thrown from `parser`, or if `count` isn't
   ///   representable.
   @inlinable
-  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan,
     count: some FixedWidthInteger,
@@ -119,7 +116,6 @@ extension Array {
   ///   - parser: A closure that parses each element from `input`.
   /// - Throws: An error if one is thrown from `parser`.
   @inlinable
-  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan,
     count: Int,
@@ -161,7 +157,6 @@ extension Array {
   ///   - parser: A closure that parses each element from `input`.
   /// - Throws: An error if one is thrown from `parser`.
   @inlinable
-  @_lifetime(&input)
   public init<E>(
     parsingAll input: inout ParserSpan,
     parser: (inout ParserSpan) throws(E) -> Element

@@ -18,7 +18,6 @@ extension InlineArray where Element == UInt8 {
   /// - Throws: A `ParsingError` if `input` does not have at least `count`
   ///   bytes remaining.
   @inlinable
-  @_lifetime(&input)
   public init(parsing input: inout ParserSpan) throws {
     let slice = try input._divide(atByteOffset: Self.count)
     self = unsafe slice.withUnsafeBytes { buffer in
@@ -53,7 +52,6 @@ extension InlineArray where Element: ~Copyable {
   ///   - parser: A closure that parses each element from `input`.
   /// - Throws: An error if one is thrown from `parser`.
   @inlinable
-  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan,
     parser: (inout ParserSpan) throws -> Element

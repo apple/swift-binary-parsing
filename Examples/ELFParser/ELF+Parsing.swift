@@ -50,7 +50,6 @@ extension ELF: ExpressibleByParsing {
 }
 
 extension ELF.ProgramHeader {
-  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan, class: ELF.Header.Class, endian: Endianness
   ) throws {
@@ -89,7 +88,6 @@ extension ELF.ProgramHeader {
 }
 
 extension ELF.SectionHeader {
-  @_lifetime(&input)
   public init(
     parsing input: inout ParserSpan, class: ELF.Header.Class, endian: Endianness
   ) throws {

@@ -12,7 +12,6 @@
 import BinaryParsing
 
 protocol BlockOption: Equatable {
-  @_lifetime(&input)
   init(
     parsing input: inout ParserSpan,
     for optionCode: UInt16,
@@ -23,7 +22,6 @@ protocol BlockOption: Equatable {
 }
 
 extension BlockOption {
-  @_lifetime(&input)
   init(parsing input: inout ParserSpan, endianness: Endianness) throws {
     let optionCode = try UInt16(parsing: &input, endianness: endianness)
     let optionSize = try Int(
