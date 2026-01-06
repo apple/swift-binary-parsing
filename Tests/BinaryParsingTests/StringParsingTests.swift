@@ -260,7 +260,6 @@ struct StringParsingTests {
   }
 
   @available(macOS 26.0, iOS 26.0, watchOS 26.0, tvOS 26.0, *)
-  @Test(.disabled("UTF8Span initializing crashing with EXEC 0x0000000"))
   func utf8Span() throws {
     try testString.withParserSpan { span in
       let utf8Span = try span.sliceUTF8Span(byteCount: 5)
