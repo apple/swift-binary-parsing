@@ -98,11 +98,11 @@ extension InterfaceDescription.Option: BlockOption {
       case 0:
         .end
       case 1:
-        try .comment(String(parsingUTF8: &input))
+        .comment(String(parsingUTF8: &input))
       case 2:
-        try .name(String(parsingUTF8: &input))
+        .name(String(parsingUTF8: &input))
       case 3:
-        try .description(String(parsingUTF8: &input))
+        .description(String(parsingUTF8: &input))
       case 4:
         try .ipv4Address(UInt64(parsing: &input, endianness: endianness))
       case 5:
@@ -122,9 +122,9 @@ extension InterfaceDescription.Option: BlockOption {
       case 10:
         try .timeZone(String(parsingUTF8: &input, count: 4))
       case 11:
-        try .filter(Array(parsingRemainingBytes: &input))
+        .filter(Array(parsingRemainingBytes: &input))
       case 12:
-        try .os(String(parsingUTF8: &input))
+        .os(String(parsingUTF8: &input))
       case 13:
         try .fcsLength(Int(parsing: &input, storedAs: UInt8.self))
       case 14:

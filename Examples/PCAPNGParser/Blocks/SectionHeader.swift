@@ -118,13 +118,13 @@ extension SectionHeader.Option: BlockOption {
       case 0:
         .end
       case 1:
-        try .comment(String(parsingUTF8: &input))
+        .comment(String(parsingUTF8: &input))
       case 2:
-        try .hardware(String(parsingUTF8: &input))
+        .hardware(String(parsingUTF8: &input))
       case 3:
-        try .os(String(parsingUTF8: &input))
+        .os(String(parsingUTF8: &input))
       case 4:
-        try .application(String(parsingUTF8: &input))
+        .application(String(parsingUTF8: &input))
       default:
         throw TestError()
       }

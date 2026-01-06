@@ -52,6 +52,6 @@ extension Chunk.InternationalText {
 
     languageTag = try String(parsingNulTerminated: &input)
     translatedKeyword = try String(parsingNulTerminated: &input)
-    text = try String(parsingUTF8: &input)
+    text = String(parsingUTF8: &input)
   }
 }

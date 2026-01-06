@@ -33,7 +33,7 @@ public enum Chunk {
       case 0x70_48_59_73:  // pHYs
         try .pixelDimensions(PixelDimensions(parsing: &slice))
       case 0x49_44_41_54:  // IDAT
-        try .data(Array(parsingRemainingBytes: &slice))
+        .data(Array(parsingRemainingBytes: &slice))
       case 0x49_45_4E_44:  // IEND
         .end
       default:
