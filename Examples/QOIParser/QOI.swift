@@ -110,7 +110,6 @@ extension Pixel {
     )
   }
 
-  @_lifetime(&input)
   init(parsingRGB input: inout ParserSpan, alpha: UInt8) throws {
     self.v = try (
       UInt8(parsing: &input),
@@ -127,7 +126,6 @@ extension Pixel {
     self.v.b &+= (b1 & 0x03) &- 2
   }
 
-  @_lifetime(&input)
   init(
     parsingLuma input: inout ParserSpan, initialByte b1: UInt8,
     previous: Pixel

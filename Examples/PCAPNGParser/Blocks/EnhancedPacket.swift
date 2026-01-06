@@ -20,7 +20,6 @@ public struct EnhancedPacket {
     case sha1(UInt64, UInt64, UInt8)
     case toeplitz(UInt32)
 
-    @_lifetime(&input)
     init(parsing input: inout ParserSpan, endianness: Endianness) throws {
       let code = try UInt8(parsing: &input)
       self =
@@ -90,7 +89,6 @@ public struct EnhancedPacket {
   public var packetData: Packet
   public var options: [Option]
 
-  @_lifetime(&input)
   init(parsing input: inout ParserSpan, endianness: Endianness) throws {
     //                         1                   2                   3
     //     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -155,7 +153,6 @@ public struct EnhancedPacket {
 }
 
 extension EnhancedPacket.Option: BlockOption {
-  @_lifetime(&input)
   init(
     parsing input: inout ParserSpan, for optionCode: UInt16,
     endianness: Endianness
@@ -190,7 +187,6 @@ extension EnhancedPacket.Option: BlockOption {
 }
 
 extension EnhancedPacket.Packet {
-  @_lifetime(&input)
   init(parsing input: inout ParserSpan, endianness: Endianness) throws {
     self.hasPreamble =
       try UInt64(parsing: &input, endianness: endianness)

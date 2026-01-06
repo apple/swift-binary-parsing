@@ -101,7 +101,9 @@ extension ParserSpan {
   ///   `Int`, if it's negative, or if there aren't enough bytes in the
   ///   original span.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func sliceRange(byteCount: some FixedWidthInteger)
     throws(ParsingError) -> ParserRange
   {
@@ -132,7 +134,9 @@ extension ParserSpan {
   ///   cannot be represented as an `Int`, if their product would overflow, or
   ///   if the product is not in the range `0...count`.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func sliceRange(
     objectStride: some FixedWidthInteger,
     objectCount: some FixedWidthInteger
@@ -151,7 +155,9 @@ extension ParserSpan {
   /// - Returns: A parser range covering the rest of the memory represented
   ///   by this parser span.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func sliceRemainingRange() -> ParserRange {
     divide(atOffset: self.count).parserRange
   }

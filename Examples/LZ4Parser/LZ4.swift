@@ -18,7 +18,6 @@ import Foundation
 
 extension Int {
   @inlinable
-  @_lifetime(&input)
   init(
     parsingLZ4Sequence input: inout ParserSpan, token: UInt8, constant: UInt8
   ) throws {

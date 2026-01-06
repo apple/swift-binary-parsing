@@ -180,7 +180,9 @@ extension ParserSpan {
 
   @unsafe
   @inlinable
+#if compiler(<6.3)
   @_lifetime(copy self)
+#endif
   mutating func consumeUnchecked(type: UInt8.Type = UInt8.self) -> UInt8 {
     defer { _lowerBound &+= 1 }
     return unsafe _bytes.unsafeLoad(
@@ -190,7 +192,9 @@ extension ParserSpan {
 
   @unsafe
   @inlinable
+#if compiler(<6.3)
   @_lifetime(copy self)
+#endif
   mutating func consumeUnchecked<T: FixedWidthInteger & BitwiseCopyable>(
     type: T.Type
   ) -> T {
@@ -209,7 +213,9 @@ extension ParserSpan {
   /// later stage might render the entire parsing operation a failure. Using
   /// `atomically` guarantees that the input span isn't modified in that case.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func atomically<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {

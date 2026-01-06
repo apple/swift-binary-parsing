@@ -164,7 +164,9 @@ extension ParserSpan {
   /// - Parameter range: The range to seek to.
   /// - Throws: A `ParsingError` if `range` is out of bounds for this span.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func seek(toRange range: ParserRange) throws(ParsingError) {
     guard (0..._bytes.byteCount).contains(range.lowerBound),
       (0..._bytes.byteCount).contains(range.upperBound)
@@ -204,7 +206,9 @@ extension ParserSpan {
   /// - Throws: A `ParsingError` if `offset` is not in the closed range
   ///   `0...count`.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func seek(toRelativeOffset offset: some FixedWidthInteger)
     throws(ParsingError)
   {
@@ -249,7 +253,9 @@ extension ParserSpan {
   /// - Throws: A `ParsingError` if `offset` is not in the closed range
   ///   `0...bytes.count`.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func seek(toAbsoluteOffset offset: some FixedWidthInteger)
     throws(ParsingError)
   {
@@ -293,7 +299,9 @@ extension ParserSpan {
   /// - Throws: A `ParsingError` if `offset` is not in the closed range
   ///   `0...count`.
   @inlinable
+#if compiler(<6.3)
   @_lifetime(&self)
+#endif
   public mutating func seek(toOffsetFromEnd offset: some FixedWidthInteger)
     throws(ParsingError)
   {

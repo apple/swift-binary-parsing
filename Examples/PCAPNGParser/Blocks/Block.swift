@@ -17,7 +17,6 @@ public enum Block {
   case enhancedPacket(EnhancedPacket)
   case custom(code: String, buffer: [UInt8])
 
-  @_lifetime(&input)
   static func custom(
     parsing input: inout ParserSpan, code: UInt32, endianness: Endianness
   ) throws -> Self {
@@ -35,7 +34,6 @@ public enum Block {
     return .custom(code: String(code, radix: 16), buffer: data)
   }
 
-  @_lifetime(&input)
   init(parsing input: inout ParserSpan, endianness: Endianness) throws {
     let code = try UInt32(parsing: &input, endianness: endianness)
     self =
