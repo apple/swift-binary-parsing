@@ -39,7 +39,6 @@ let package = Package(
       name: "BinaryParsing",
       dependencies: ["BinaryParsingMacros"],
       swiftSettings: [
-        .enableExperimentalFeature("ValueGenerics"),
         .enableExperimentalFeature("Lifetimes"),
         .strictMemorySafety(),
       ]
@@ -49,9 +48,7 @@ let package = Package(
     //        dependencies: ["BinaryParsingMacros"],
     //        swiftSettings: [
     //            .enableExperimentalFeature("Embedded"),
-    //            .enableExperimentalFeature("Span"),
-    //            .enableExperimentalFeature("ValueGenerics"),
-    //            .enableExperimentalFeature("LifetimeDependence"),
+    //            .enableExperimentalFeature("Lifetimes"),
     //        ]
     //    ),
     .macro(
@@ -63,8 +60,7 @@ let package = Package(
         .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
       ],
       swiftSettings: [
-        .enableExperimentalFeature("FreestandingMacros"),
-        .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("MemberImportVisibility")
       ]
     ),
     .target(
