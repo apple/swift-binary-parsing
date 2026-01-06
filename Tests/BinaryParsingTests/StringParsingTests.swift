@@ -65,31 +65,31 @@ struct StringParsingTests {
   func parseUTF8Full() throws {
     // Parse entire UTF-8 buffer
     try testString.withParserSpan { span in
-      let str = try String(parsingUTF8: &span)
+      let str = String(parsingUTF8: &span)
       #expect(str == testString)
       #expect(span.count == 0)
     }
     try testStringWithNul.withParserSpan { span in
-      let str = try String(parsingUTF8: &span)
+      let str = String(parsingUTF8: &span)
       #expect(str == testStringWithNul)
       #expect(span.count == 0)
     }
     try testStringNonASCII.withParserSpan { span in
-      let str = try String(parsingUTF8: &span)
+      let str = String(parsingUTF8: &span)
       #expect(str == testStringNonASCII)
       #expect(span.count == 0)
     }
 
     // Empty string
-    try emptyBuffer.withParserSpan { span in
-      let str = try String(parsingUTF8: &span)
+    emptyBuffer.withParserSpan { span in
+      let str = String(parsingUTF8: &span)
       #expect(str.isEmpty)
       #expect(span.count == 0)
     }
 
     // Invalid UTF-8 sequence
-    try invalidBuffer.withParserSpan { span in
-      let str = try String(parsingUTF8: &span)
+    invalidBuffer.withParserSpan { span in
+      let str = String(parsingUTF8: &span)
       #expect(str == "\u{FFFD}\0")
       #expect(span.count == 0)
     }
@@ -222,7 +222,7 @@ struct StringParsingTests {
       #expect(str1 == testString)
 
       // Then parse the test as a UTF-8 string
-      let str2 = try String(parsingUTF8: &span)
+      let str2 = String(parsingUTF8: &span)
       #expect(str2 == testStringNonASCII)
 
       #expect(span.count == 0)
@@ -235,7 +235,7 @@ struct StringParsingTests {
 
     // Test UTF-8 parsing
     try complexString.withParserSpan { span in
-      let parsedString = try String(parsingUTF8: &span)
+      let parsedString = String(parsingUTF8: &span)
       #expect(parsedString == complexString)
       #expect(span.count == 0)
     }

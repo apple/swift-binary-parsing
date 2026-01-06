@@ -24,7 +24,7 @@ public enum Block {
       parsing: &input, storedAs: UInt32.self, endianness: endianness)
 
     var slice = try input.sliceSpan(byteCount: blockLength - 12)
-    let data = try Array(parsingRemainingBytes: &slice)
+    let data = Array(parsingRemainingBytes: &slice)
 
     let blockLengthCheck = try UInt32(parsing: &input, endianness: endianness)
     if blockLengthCheck != blockLength {

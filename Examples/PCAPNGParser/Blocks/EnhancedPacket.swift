@@ -164,7 +164,7 @@ extension EnhancedPacket.Option: BlockOption {
       case 0:
         .end
       case 1:
-        try .comment(String(parsingUTF8: &input))
+        .comment(String(parsingUTF8: &input))
       case 2:
         try .flags(UInt32(parsing: &input, endianness: endianness))
       case 3:
@@ -177,7 +177,7 @@ extension EnhancedPacket.Option: BlockOption {
       case 6:
         try .queue(UInt32(parsing: &input, endianness: endianness))
       case 7:
-        try .verdict(Array(parsingRemainingBytes: &input))
+        .verdict(Array(parsingRemainingBytes: &input))
       case 8:
         try .processIDthreadID(UInt64(parsing: &input, endianness: endianness))
       default:
@@ -200,7 +200,7 @@ extension EnhancedPacket.Packet {
     self.type = try UInt16(parsing: &input, endianness: endianness)
 
     var dataSlice = try input.sliceSpan(byteCount: input.count - 4)
-    self.data = try Array(parsingRemainingBytes: &dataSlice)
+    self.data = Array(parsingRemainingBytes: &dataSlice)
 
     self.fcs = try UInt32(parsing: &input, endianness: endianness)
   }
