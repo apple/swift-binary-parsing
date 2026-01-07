@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if canImport(Foundation)
+#if !$Embedded && canImport(Foundation)
 public import Foundation
 
 extension Data {

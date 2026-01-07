@@ -17,11 +17,11 @@ import PackageDescription
 let package = Package(
   name: "swift-binary-parsing",
   platforms: [
-    .macOS(.v13), .iOS(.v16), .watchOS(.v9), .tvOS(.v16), .visionOS(.v1),
+    .macOS(.v14), .iOS(.v17), .watchOS(.v10), .tvOS(.v17), .visionOS(.v1),
   ],
   products: [
-    .library(name: "BinaryParsing", targets: ["BinaryParsing"])
-    //    .library(name: "BinaryParsingEmbedded", targets: ["BinaryParsingEmbedded"]),
+    .library(name: "BinaryParsing", targets: ["BinaryParsing"]),
+    .library(name: "BinaryParsingEmbedded", targets: ["BinaryParsingEmbedded"]),
   ],
   dependencies: [
     .package(
@@ -43,14 +43,14 @@ let package = Package(
         .strictMemorySafety(),
       ]
     ),
-    //    .target(
-    //        name: "BinaryParsingEmbedded",
-    //        dependencies: ["BinaryParsingMacros"],
-    //        swiftSettings: [
-    //            .enableExperimentalFeature("Embedded"),
-    //            .enableExperimentalFeature("Lifetimes"),
-    //        ]
-    //    ),
+    .target(
+      name: "BinaryParsingEmbedded",
+      dependencies: ["BinaryParsingMacros"],
+      swiftSettings: [
+        .enableExperimentalFeature("Embedded"),
+        .enableExperimentalFeature("Lifetimes"),
+      ]
+    ),
     .macro(
       name: "BinaryParsingMacros",
       dependencies: [
@@ -78,6 +78,14 @@ let package = Package(
         "ParserTest",
         .product(name: "ArgumentParser", package: "swift-argument-parser"),
       ]),
+    .executableTarget(
+      name: "EmbeddedExample",
+      dependencies: ["BinaryParsingEmbedded"],
+      path: "EmbeddedExample",
+      swiftSettings: [
+        .enableExperimentalFeature("Embedded")
+      ]
+    ),
 
     .testTarget(
       name: "BinaryParsingTests",

@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if canImport(Foundation)
+#if !$Embedded && canImport(Foundation)
 public import Foundation
 #endif
 
@@ -65,7 +65,7 @@ extension RandomAccessCollection<UInt8> {
   public func withParserSpanIfAvailable<T>(
     _ body: (inout ParserSpan) throws(ThrownParsingError) -> T
   ) throws(ThrownParsingError) -> T? {
-    #if canImport(Foundation)
+    #if !$Embedded && canImport(Foundation)
     if let data = self as? Foundation.Data {
       let result = unsafe data.withUnsafeBytes { buffer in
         var span = unsafe ParserSpan(_unsafeBytes: buffer)
@@ -81,7 +81,9 @@ extension RandomAccessCollection<UInt8> {
     let result = self.withContiguousStorageIfAvailable { buffer in
       let rawBuffer = UnsafeRawBufferPointer(buffer)
       var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
-      return Result<T, ThrownParsingError> { try body(&span) }
+      return Result<T, ThrownParsingError> { () throws(ThrownParsingError) in
+        try body(&span)
+      }
     }
     switch result {
     case .success(let t): return t
@@ -136,7 +138,7 @@ extension ParserSpanProvider {
   }
 }
 
-#if canImport(Foundation)
+#if !$Embedded && canImport(Foundation)
 extension Data: ParserSpanProvider {
   @inlinable
   public func withParserSpan<T, E>(
