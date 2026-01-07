@@ -62,7 +62,7 @@ extension InlineArray where Element: ~Copyable {
     }
   }
   #endif
-  
+
   /// Creates a new array by parsing the specified number of elements from the given
   /// parser span, using the provided closure for parsing (with a typed error).
   ///
