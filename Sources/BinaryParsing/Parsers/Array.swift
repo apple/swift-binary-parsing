@@ -91,7 +91,7 @@ extension Array {
   #endif
 
   /// Creates a new array by parsing the specified number of elements from the given
-  /// parser span, using the provided closure for parsing.
+  /// parser span, using the provided closure for parsing (with a typed error).
   ///
   /// The provided closure is called `byteCount` times while initializing the array.
   /// For example, the following code parses an array of 16 `UInt32` values from a
@@ -119,8 +119,8 @@ extension Array {
   public init(
     parsing input: inout ParserSpan,
     count: Int,
-    parser: (inout ParserSpan) throws(ThrownParsingError) -> Element
-  ) throws(ThrownParsingError) {
+    parser: (inout ParserSpan) throws(ParsingError) -> Element
+  ) throws(ParsingError) {
     guard count >= 0 else {
       throw ParsingError(statusOnly: .invalidValue)
     }
