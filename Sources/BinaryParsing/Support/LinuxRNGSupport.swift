@@ -11,6 +11,7 @@
 
 //#if $Embedded && os(Linux)
 // Temporary workaround for lack of random support on embedded Linux
+// swift-format-ignore: AlwaysUseLowerCamelCase
 @_cdecl("arc4random_buf")
-func arc4random_buf(_ buf: UnsafeMutableRawPointer?, _ nbytes: Int) {}
+func arc4random_buf(_ buf: UnsafeMutableRawPointer, _ nbytes: Int) {}
 //#endif
