@@ -21,7 +21,6 @@ let package = Package(
   ],
   products: [
     .library(name: "BinaryParsing", targets: ["BinaryParsing"])
-    //    .library(name: "BinaryParsingEmbedded", targets: ["BinaryParsingEmbedded"]),
   ],
   dependencies: [
     .package(
@@ -43,14 +42,6 @@ let package = Package(
         .strictMemorySafety(),
       ]
     ),
-    //    .target(
-    //        name: "BinaryParsingEmbedded",
-    //        dependencies: ["BinaryParsingMacros"],
-    //        swiftSettings: [
-    //            .enableExperimentalFeature("Embedded"),
-    //            .enableExperimentalFeature("Lifetimes"),
-    //        ]
-    //    ),
     .macro(
       name: "BinaryParsingMacros",
       dependencies: [
@@ -119,7 +110,9 @@ let package = Package(
   ]
 )
 
-if ProcessInfo.processInfo.environment["ENABLE_BENCHMARKING"] != nil {
+// MARK: Benchmarking overrides
+
+if isSet("ENABLE_BENCHMARKING") {
   package.dependencies += [
     .package(
       url: "https://github.com/ordo-one/package-benchmark",
@@ -140,4 +133,40 @@ if ProcessInfo.processInfo.environment["ENABLE_BENCHMARKING"] != nil {
       ]
     )
   ]
+}
+
+// MARK: Embedded overrides
+
+if isSet("ENABLE_EMBEDDED") {
+  package.platforms = [
+    .macOS(.v14), .iOS(.v17), .watchOS(.v10), .tvOS(.v17), .visionOS(.v1),
+  ]
+
+  package.products += [
+    .library(name: "BinaryParsingEmbedded", targets: ["BinaryParsingEmbedded"])
+  ]
+
+  package.targets += [
+    .target(
+      name: "BinaryParsingEmbedded",
+      dependencies: ["BinaryParsingMacros"],
+      swiftSettings: [
+        .enableExperimentalFeature("Embedded"),
+        .enableExperimentalFeature("Lifetimes"),
+        .strictMemorySafety(),
+      ]
+    ),
+    .executableTarget(
+      name: "EmbeddedExample",
+      dependencies: ["BinaryParsingEmbedded"],
+      path: "EmbeddedExample",
+      swiftSettings: [
+        .enableExperimentalFeature("Embedded")
+      ]
+    ),
+  ]
+}
+
+func isSet(_ key: String) -> Bool {
+  ProcessInfo.processInfo.environment[key] != nil
 }
