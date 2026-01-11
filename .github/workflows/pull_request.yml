@@ -63,7 +63,7 @@ jobs:
         run: xcrun swift --version
       - name: Clang version
         run: xcrun clang --version
-      - name: Build / Test
+      - name: Build
         run: xcodebuild -project Xcode/BinaryParsing.xcodeproj build -scheme BinaryParsing
         timeout-minutes: 60
 
