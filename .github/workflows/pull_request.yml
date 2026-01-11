@@ -51,6 +51,22 @@ jobs:
           echo "Running embedded Swift executable..."
           .build/debug/EmbeddedExample
 
+  xcodeproject:
+    name: Xcode project (Xcode 26.1)
+    runs-on: [self-hosted, macos, "sequoia", "ARM64"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Select Xcode
+        run: echo "DEVELOPER_DIR=/Applications/Xcode_26.1.app" >> $GITHUB_ENV
+      - name: Swift version
+        run: xcrun swift --version
+      - name: Clang version
+        run: xcrun clang --version
+      - name: Build
+        run: xcodebuild -project Xcode/BinaryParsing.xcodeproj build -scheme BinaryParsing
+        timeout-minutes: 60
+
   soundness:
     name: Soundness
     uses: swiftlang/github-workflows/.github/workflows/soundness.yml@main

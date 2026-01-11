@@ -33,3 +33,7 @@ Package.resolved
 **/Package.resolved
 .unacceptablelanguageignore
  -a*/Snapshots/*
+*.xcconfig
+*.pbxproj
+*.xcworkspacedata
+*.xctestplan
