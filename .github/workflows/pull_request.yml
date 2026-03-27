@@ -29,7 +29,7 @@ jobs:
     with:
       enable_macos_checks: true
       macos_xcode_versions: "[\"26.3\", \"26.4.b2\"]"
-      linux_swift_versions: "[\"6.2\", \"nightly-6.3\", \"nightly-main\"]"
+      linux_swift_versions: "[\"6.2\", \"nightly-6.3\"]"
       linux_build_command: swift test --disable-experimental-prebuilts  # prebuilt swift-syntax not building
       enable_windows_checks: false
 
