@@ -52,7 +52,7 @@ jobs:
           .build/debug/EmbeddedExample
 
   xcodeproject:
-    name: Xcode project (Xcode 26.1)
+    name: Xcode project (Xcode 26.3)
     runs-on: [self-hosted, macos, "tahoe", "ARM64"]
     steps:
       - name: Checkout repository
