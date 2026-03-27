@@ -53,12 +53,12 @@ jobs:
 
   xcodeproject:
     name: Xcode project (Xcode 26.1)
-    runs-on: [self-hosted, macos, "sequoia", "ARM64"]
+    runs-on: [self-hosted, macos, "tahoe", "ARM64"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Select Xcode
-        run: echo "DEVELOPER_DIR=/Applications/Xcode_26.1.app" >> $GITHUB_ENV
+        run: echo "DEVELOPER_DIR=/Applications/Xcode_26.3.app" >> $GITHUB_ENV
       - name: Swift version
         run: xcrun swift --version
       - name: Clang version
