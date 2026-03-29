@@ -2,7 +2,7 @@
 
 To be a truly great community, Swift.org needs to welcome developers from all walks of life, with different backgrounds, and with a wide range of experience. A diverse and friendly community will have more great ideas, more unique perspectives, and produce more great code.  We will work diligently to make the Swift community welcoming to everyone.
 
-To give clarity of what is expected of our members, Swift.org is based on the code of conduct defined by [contributor-covenant.org](http://contributor-covenant.org). This document is used across many open source communities, and we think it articulates our values well.
+To give clarity of what is expected of our members, Swift.org is based on the code of conduct defined by [contributor-covenant.org](https://contributor-covenant.org). This document is used across many open source communities, and we think it articulates our values well.
 
 ### Contributor Code of Conduct v1.4
 

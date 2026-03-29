@@ -44,7 +44,7 @@ extension QOI.Header {
     self.channels = try Channels(parsing: &input)
     self.colorspace = try ColorSpace(parsing: &input)
     
-    // Simplify overflow checking with optional operators (optionators?)
+    // Simplify overflow checking with checked arithmetic operators
     guard let pixelCount = width *? height,
       width > 0, height > 0,
       pixelCount <= maxPixelCount 
