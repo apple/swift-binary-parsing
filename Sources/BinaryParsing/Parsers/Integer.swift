@@ -12,8 +12,7 @@
 extension ParserSpan {
   @inlinable
   public func _checkCount(minimum: Int) throws(ParsingError) {
-    let requiredUpper = _lowerBound &+ minimum
-    guard requiredUpper <= _upperBound else {
+    guard count >= minimum else {
       throw ParsingError(
         status: .insufficientData,
         location: startPosition)

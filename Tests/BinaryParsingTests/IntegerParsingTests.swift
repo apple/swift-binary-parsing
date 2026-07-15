@@ -655,4 +655,15 @@ struct IntegerParsingTests {
     let result = try lebEncoded.withParserSpan { try Int(parsingLEB128: &$0) }
     #expect(result == expected)
   }
+
+  @Test
+  func checkCountDoesNotOverflow() throws {
+    try bigEndianOnes.withParserSpanIfAvailable { span in
+      // Consume some bytes so that `startPosition` is nonzero.
+      _ = try UInt32(parsingBigEndian: &span)
+      #expect(throws: ParsingError.self) {
+        try span._checkCount(minimum: .max)
+      }
+    }
+  }
 }
