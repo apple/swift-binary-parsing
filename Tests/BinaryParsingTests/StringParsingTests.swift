@@ -213,6 +213,20 @@ struct StringParsingTests {
   }
 
   @Test
+  func parseUTF16Unaligned() throws {
+    // Prepend a single byte so that the UTF-16 code units that follow start
+    // at an odd offset within the backing buffer, forcing a misaligned load.
+    let buffer: [UInt8] = [0xAA] + testStringNonASCII.utf16Buffer
+
+    try buffer.withParserSpan { span in
+      _ = try UInt8(parsing: &span)
+      let str = try String(parsingUTF16: &span)
+      #expect(str == testStringNonASCII)
+      #expect(span.count == 0)
+    }
+  }
+
+  @Test
   func testMultipleOperationsOnSameBuffer() throws {
     let combinedString = "\(testString)\0\(testStringNonASCII)"
 
