@@ -116,7 +116,7 @@ extension String {
 // MARK: - Unaligned buffer pointer
 
 extension UnsafeRawPointer {
-  @export(implementation)
+  @_alwaysEmitIntoClient
   @safe
   func _isAligned<T>(for: T.Type) -> Bool {
     Int(bitPattern: self) & (MemoryLayout<T>.alignment - 1) == 0
@@ -136,7 +136,7 @@ struct _UnalignedUnsafeBufferPointer<T: BitwiseCopyable> {
   @usableFromInline
   @safe var _count: Int
 
-  @export(implementation)
+  @_alwaysEmitIntoClient
   init(_base: UnsafeRawPointer, _count: Int) {
     unsafe self._base = _base
     self._count = _count
@@ -144,12 +144,12 @@ struct _UnalignedUnsafeBufferPointer<T: BitwiseCopyable> {
 }
 
 extension _UnalignedUnsafeBufferPointer: @unsafe RandomAccessCollection {
-  @export(implementation)
+  @_alwaysEmitIntoClient
   var startIndex: Int { 0 }
-  @export(implementation)
+  @_alwaysEmitIntoClient
   var endIndex: Int { _count }
 
-  @export(implementation)
+  @_alwaysEmitIntoClient
   subscript(position: Int) -> T {
     get {
       unsafe _base.loadUnaligned(
