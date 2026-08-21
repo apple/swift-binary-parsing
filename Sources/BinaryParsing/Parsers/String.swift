@@ -60,10 +60,18 @@ extension String {
   internal init(_uncheckedParsingUTF16 input: inout ParserSpan)
     throws(ParsingError)
   {
+    assert(input.count.isMultiple(of: 2))
     let stringBytes = input.divide(at: input.endPosition)
     self = unsafe stringBytes.withUnsafeBytes { buffer in
-      let utf16Buffer = unsafe buffer.assumingMemoryBound(to: UInt16.self)
-      return unsafe String(decoding: utf16Buffer, as: UTF16.self)
+      guard let base = buffer.baseAddress else { return "" }
+      if base._isAligned(for: UInt16.self) {
+        let utf16Buffer = unsafe buffer.assumingMemoryBound(to: UInt16.self)
+        return unsafe String(decoding: utf16Buffer, as: UTF16.self)
+      } else {
+        let utf16Buffer = unsafe _UnalignedUnsafeBufferPointer<UInt16>(
+          _base: base, _count: buffer.count / 2)
+        return unsafe String(decoding: utf16Buffer, as: UTF16.self)
+      }
     }
   }
 
@@ -102,5 +110,50 @@ extension String {
     var slice = try input._divide(
       atByteOffset: codeUnitCount.multipliedThrowingOnOverflow(by: 2))
     unsafe try self.init(_uncheckedParsingUTF16: &slice)
+  }
+}
+
+// MARK: - Unaligned buffer pointer
+
+extension UnsafeRawPointer {
+  @_alwaysEmitIntoClient
+  @safe
+  func _isAligned<T>(for: T.Type) -> Bool {
+    Int(bitPattern: self) & (MemoryLayout<T>.alignment - 1) == 0
+  }
+}
+
+@unsafe
+@usableFromInline
+struct _UnalignedUnsafeBufferPointer<T: BitwiseCopyable> {
+  @usableFromInline
+  typealias Element = T
+  @usableFromInline
+  typealias Index = Int
+
+  @usableFromInline
+  var _base: UnsafeRawPointer
+  @usableFromInline
+  @safe var _count: Int
+
+  @_alwaysEmitIntoClient
+  init(_base: UnsafeRawPointer, _count: Int) {
+    unsafe self._base = _base
+    self._count = _count
+  }
+}
+
+extension _UnalignedUnsafeBufferPointer: @unsafe RandomAccessCollection {
+  @_alwaysEmitIntoClient
+  var startIndex: Int { 0 }
+  @_alwaysEmitIntoClient
+  var endIndex: Int { _count }
+
+  @_alwaysEmitIntoClient
+  subscript(position: Int) -> T {
+    get {
+      unsafe _base.loadUnaligned(
+        fromByteOffset: position * MemoryLayout<T>.stride, as: T.self)
+    }
   }
 }
