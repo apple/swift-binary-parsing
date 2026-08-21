@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install apt dependencies
         run: sudo apt-get -qq update && sudo apt-get -qq -y install curl
@@ -26,10 +26,10 @@ jobs:
   tests:
     name: Test
     needs: [soundness, validate_format_config]
-    uses: swiftlang/github-workflows/.github/workflows/swift_package_test.yml@0.0.13
+    uses: swiftlang/github-workflows/.github/workflows/swift_package_test.yml@0.0.14
     with:
       enable_macos_checks: true
-      macos_xcode_versions: "[\"26.3\", \"26.4\"]"
+      macos_xcode_versions: "[\"swift_6.2\", \"swift_6.3\"]"
       linux_swift_versions: "[\"6.2\", \"nightly-main\", \"nightly-6.3\"]"
       linux_build_command: swift test --disable-experimental-prebuilts  # prebuilt swift-syntax not building
       enable_windows_checks: false
@@ -45,7 +45,7 @@ jobs:
       - name: Clang version
         run: clang --version
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Build / Test
         run: |
           ENABLE_EMBEDDED=1 swift test --disable-experimental-prebuilts
@@ -57,7 +57,7 @@ jobs:
     runs-on: [self-hosted, macos, "tahoe", "ARM64"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Select Xcode
         run: echo "DEVELOPER_DIR=/Applications/Xcode_26.3.app" >> $GITHUB_ENV
       - name: Swift version
@@ -70,7 +70,7 @@ jobs:
 
   soundness:
     name: Soundness
-    uses: swiftlang/github-workflows/.github/workflows/soundness.yml@0.0.13
+    uses: swiftlang/github-workflows/.github/workflows/soundness.yml@0.0.14
     with:
       format_check_enabled: true
       format_check_container_image: swiftlang/swift:nightly-6.2-jammy
