@@ -9,9 +9,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if !$Embedded && canImport(Foundation)
+#if !$Embedded && canImport(FoundationEssentials)
+public import FoundationEssentials
+#elseif !$Embedded && canImport(Foundation)
 public import Foundation
+#endif
 
+#if !$Embedded && (canImport(FoundationEssentials) || canImport(Foundation))
 extension Data {
   /// Creates a new data instance by copying the remaining bytes from the
   /// given parser span.
