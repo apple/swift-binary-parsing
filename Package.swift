@@ -24,14 +24,14 @@ let package = Package(
   ],
   dependencies: [
     .package(
-      url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
+      url: "https://github.com/apple/swift-argument-parser", from: "1.8.0"),
     .package(
-      url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
+      url: "https://github.com/swiftlang/swift-syntax.git", from: "603.0.0"),
     .package(
       url: "https://github.com/pointfreeco/swift-macro-testing.git",
-      from: "0.6.4"),
+      from: "0.6.5"),
     .package(
-      url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.0.0"),
+      url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.5.0"),
   ],
   targets: [
     .target(
