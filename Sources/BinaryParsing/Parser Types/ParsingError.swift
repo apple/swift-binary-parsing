@@ -49,7 +49,7 @@ public struct ParsingError: Error {
     _location >= 0 ? _location : nil
   }
 
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// The user-provided error associated with this parsing error.
   public var userError: (any Error)?
 
@@ -78,13 +78,15 @@ public struct ParsingError: Error {
   }
 }
 
-#if !$Embedded
+#if !$Embedded || compiler(>=6.4)
 extension ParsingError {
   public init(userError: any Error) {
     self = .init(status: .userError, userError: userError)
   }
 }
+#endif
 
+#if !$Embedded
 extension ParsingError: CustomStringConvertible {
   public var description: String {
     if let location {
@@ -109,7 +111,7 @@ extension ParsingError.Status: CustomStringConvertible {
 }
 #endif
 
-#if !$Embedded
+#if !$Embedded || compiler(>=6.4)
 /// An error thrown by the library user.
 ///
 /// In a build for non-embedded Swift, `ThrownParsingError` aliases `any Error`,

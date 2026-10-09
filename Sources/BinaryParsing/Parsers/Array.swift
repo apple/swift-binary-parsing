@@ -44,7 +44,7 @@ extension Array where Element == UInt8 {
 }
 
 extension Array {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Creates a new array by parsing the specified number of elements from the given
   /// parser span, using the provided closure for parsing.
   ///
