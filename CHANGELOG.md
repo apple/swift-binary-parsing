@@ -8,6 +8,20 @@ Add new items at the end of the relevant section under **Unreleased**.
 
 ---
 
+## [0.0.3] - 2026-10-09
+
+### Changes
+
+- Prefers the `FoundationEssentials` import when possible, falling back to `Foundation` only when necessary. ([#57])
+- Updates dependencies to their latest versions. ([#59])
+
+### Fixes
+
+- Eliminates a possible overflow in `ParserSpan._checkCount(minimum:)`. ([#60])
+
+The 0.0.3 release includes contributions from [colemancda], [lhoward], [madrob], and [natecook1000]. Thank you!
+
+
 ## [0.0.2] - 2026-03-27
 
 ### Additions
@@ -31,10 +45,11 @@ Add new items at the end of the relevant section under **Unreleased**.
 - Re-enables a test that is passing again. ([#48])
 - Removes extraneous `try` keywords. ([#46])
 - Fixes DocC disambiguation issues. ([#23])
-- Updates dependencies and platform baselines.([#21], [#22], [#38], [#33])
+- Updates dependencies and platform baselines. ([#21], [#22], [#38], [#33])
 
-The 0.0.2 release includes contributions from [dgregor], [kkazuha7], [incertum],
+The 0.0.2 release includes contributions from [DougGregor], [kkazuha7], [incertum],
 [natecook1000], and [willtemperley]. Thank you!
+
 
 ## [0.0.1] - 2025-07-12
 
@@ -46,7 +61,8 @@ This changelog's format is based on [Keep a Changelog](https://keepachangelog.co
 
 <!-- Link references for releases -->
 
-[Unreleased]: https://github.com/apple/swift-binary-parsing/compare/0.0.2...HEAD
+[Unreleased]: https://github.com/apple/swift-binary-parsing/compare/0.0.3...HEAD
+[0.0.3]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.2...0.0.3
 [0.0.2]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.1...0.0.2
 [0.0.1]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.1
 
@@ -74,11 +90,18 @@ This changelog's format is based on [Keep a Changelog](https://keepachangelog.co
 [#50]: https://github.com/apple/swift-binary-parsing/pull/50
 [#51]: https://github.com/apple/swift-binary-parsing/pull/51
 [#52]: https://github.com/apple/swift-binary-parsing/pull/52
+[#57]: https://github.com/apple/swift-binary-parsing/pull/57
+[#59]: https://github.com/apple/swift-binary-parsing/pull/59
+[#60]: https://github.com/apple/swift-binary-parsing/pull/60
 
 <!-- Link references for contributors -->
 
-[DougGregor]: https://github.com/DougGregor
-[incertum]: https://github.com/incertum
-[kkazuha7]: https://github.com/kkazuha7
-[natecook1000]: https://github.com/natecook1000
-[willtemperley]: https://github.com/willtemperley
+[colemancda]: https://github.com/apple/swift-binary-parsing/commits?author=colemancda
+[DougGregor]: https://github.com/apple/swift-binary-parsing/commits?author=DougGregor
+[incertum]: https://github.com/apple/swift-binary-parsing/commits?author=incertum
+[kkazuha7]: https://github.com/apple/swift-binary-parsing/commits?author=kkazuha7
+[lhoward]: https://github.com/apple/swift-binary-parsing/commits?author=lhoward
+[madrob]: https://github.com/apple/swift-binary-parsing/commits?author=madrob
+[natecook1000]: https://github.com/apple/swift-binary-parsing/commits?author=natecook1000
+[willtemperley]: https://github.com/apple/swift-binary-parsing/commits?author=willtemperley
+
