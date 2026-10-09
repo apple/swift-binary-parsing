@@ -35,10 +35,14 @@ jobs:
       enable_windows_checks: false
 
   embedded:
-    name: Embedded Test (Linux nightly-6.3)
+    name: Embedded Test (Linux nightly-${{ matrix.swift_version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        swift_version: ["6.3", "6.4"]
     container:
-      image: swiftlang/swift:nightly-6.3-jammy
+      image: swiftlang/swift:nightly-${{ matrix.swift_version }}-jammy
     steps:
       - name: Swift version
         run: swift --version
