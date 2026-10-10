@@ -28,7 +28,7 @@ extension InlineArray where Element == UInt8 {
 
 @available(macOS 26, iOS 26, watchOS 26, tvOS 26, visionOS 26, *)
 extension InlineArray where Element: ~Copyable {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Creates a new array by parsing the specified number of elements from the given
   /// parser span, using the provided closure for parsing.
   ///

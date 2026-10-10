@@ -24,6 +24,10 @@ struct EmbeddedTest {
 
     precondition(a == 1)
     precondition(b == 0x203)
-    print(c)
+    precondition(c == 0x405)
+    print("Should print '1 / 515 / 1029' on separate lines")
+    print(a)  // 1
+    print(b)  // 515
+    print(c)  // 1029
   }
 }

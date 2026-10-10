@@ -107,7 +107,7 @@ public protocol ParserSpanProvider {
 }
 
 extension ParserSpanProvider {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Executes the given closure with a `ParserSpan` over the contents of this
   /// type, consuming the given parser range instead of the full span.
   @_alwaysEmitIntoClient
