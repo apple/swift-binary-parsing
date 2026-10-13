@@ -12,7 +12,7 @@
 // MARK: Start & Count
 
 extension Range where Bound: FixedWidthInteger {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Creates a new half-open range by parsing the start and count of the range,
   /// using the given parser closure for each value.
   ///
@@ -68,7 +68,7 @@ extension Range where Bound: FixedWidthInteger {
 }
 
 extension ClosedRange where Bound: FixedWidthInteger {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   @available(
     *, deprecated,
     message:
@@ -112,7 +112,7 @@ extension ClosedRange where Bound: FixedWidthInteger {
 // MARK: Start & End
 
 extension Range {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Creates a new half-open range by parsing the start and end of the range,
   /// using the given parser closure for each value.
   ///
@@ -168,7 +168,7 @@ extension Range {
 }
 
 extension ClosedRange {
-  #if !$Embedded
+  #if !$Embedded || compiler(>=6.4)
   /// Creates a new closed range by parsing the start and end of the range,
   /// using the given parser closure for each value.
   ///
