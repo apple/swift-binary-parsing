@@ -8,6 +8,13 @@ Add new items at the end of the relevant section under **Unreleased**.
 
 ---
 
+## [0.0.4] - 2026-10-15
+
+### Changes
+
+- Allows existential errors in embedded contexts when building with a 6.4 compiler or greater. ([#68])
+
+
 ## [0.0.3] - 2026-10-09
 
 ### Changes
@@ -61,7 +68,8 @@ This changelog's format is based on [Keep a Changelog](https://keepachangelog.co
 
 <!-- Link references for releases -->
 
-[Unreleased]: https://github.com/apple/swift-binary-parsing/compare/0.0.3...HEAD
+[Unreleased]: https://github.com/apple/swift-binary-parsing/compare/0.0.4...HEAD
+[0.0.4]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.3...0.0.4
 [0.0.3]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.2...0.0.3
 [0.0.2]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.1...0.0.2
 [0.0.1]: https://github.com/apple/swift-binary-parsing/releases/tag/0.0.1
@@ -93,6 +101,7 @@ This changelog's format is based on [Keep a Changelog](https://keepachangelog.co
 [#57]: https://github.com/apple/swift-binary-parsing/pull/57
 [#59]: https://github.com/apple/swift-binary-parsing/pull/59
 [#60]: https://github.com/apple/swift-binary-parsing/pull/60
+[#68]: https://github.com/apple/swift-binary-parsing/pull/68
 
 <!-- Link references for contributors -->
 
