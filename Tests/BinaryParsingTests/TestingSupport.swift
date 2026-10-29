@@ -19,9 +19,9 @@ func === (lhs: borrowing ParserSpan, rhs: borrowing ParserSpan) -> Bool {
     lhs.count == rhs.count
   else { return false }
 
-  return lhs.withUnsafeBytes { lhs in
-    rhs.withUnsafeBytes { rhs in
-      (lhs.baseAddress, lhs.count) == (rhs.baseAddress, rhs.count)
+  return unsafe lhs.withUnsafeBytes { lhs in
+    unsafe rhs.withUnsafeBytes { rhs in
+      unsafe (lhs.baseAddress, lhs.count) == (rhs.baseAddress, rhs.count)
     }
   }
 }
@@ -87,7 +87,7 @@ extension Array where Element == UInt8 {
         if T.isSigned && value < 0 { 0xff } else { 0x00 }
       }
     self =
-      Array(repeating: paddingByte, count: paddingCount)
+      unsafe Array(repeating: paddingByte, count: paddingCount)
       + Swift.withUnsafeBytes(of: value.bigEndian, Array.init)
   }
 
@@ -105,7 +105,7 @@ extension Array where Element == UInt8 {
         if T.isSigned && value < 0 { 0xff } else { 0x00 }
       }
     self =
-      Swift.withUnsafeBytes(of: value.littleEndian, Array.init)
+      unsafe Swift.withUnsafeBytes(of: value.littleEndian, Array.init)
       + Array(repeating: paddingByte, count: paddingCount)
   }
 
