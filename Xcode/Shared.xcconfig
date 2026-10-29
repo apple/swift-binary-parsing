@@ -21,6 +21,10 @@ CODE_SIGN_IDENTITY[sdk=watchos*] = "iOS Developer"
 CODE_SIGN_IDENTITY[sdk=appletvos*] = "iOS Developer"
 
 SWIFT_VERSION = 6
+SWIFT_STRICT_MEMORY_SAFETY = YES
+SWIFT_WARNINGS_AS_ERRORS_GROUPS = StrictMemorySafety
+SWIFT_STRICT_CONCURRENCY = complete
+
 ONLY_ACTIVE_ARCH[config=Debug] = YES
 
 SWIFT_COMPILATION_MODE[config=Release] = wholemodule

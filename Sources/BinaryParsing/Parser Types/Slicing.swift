@@ -192,7 +192,7 @@ extension ParserSpan {
   {
     let rawSpan = try sliceSpan(byteCount: byteCount).bytes
     do {
-      let span = Span<UInt8>(_bytes: rawSpan)
+      let span = Span<UInt8>(viewing: rawSpan)
       return try UTF8Span(validating: span)
     } catch {
       throw ParsingError(status: .userError, location: startPosition)
