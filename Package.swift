@@ -40,6 +40,7 @@ let package = Package(
       swiftSettings: [
         .enableExperimentalFeature("Lifetimes"),
         .strictMemorySafety(),
+        .treatWarning("StrictMemorySafety", as: .error),
       ]
     ),
     .macro(

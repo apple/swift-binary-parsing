@@ -26,10 +26,10 @@ private let data: [UInt8] = [
 struct OptimizationTests {
   func precheckParseFour(parsing input: inout ParserSpan) throws -> Int {
     try input._checkCount(minimum: 16)
-    let a = UInt32(_unchecked: (), parsingBigEndian: &input)
-    let b = UInt32(_unchecked: (), parsingBigEndian: &input)
-    let c = UInt32(_unchecked: (), parsingBigEndian: &input)
-    let d = UInt32(_unchecked: (), parsingBigEndian: &input)
+    let a = unsafe UInt32(_unchecked: (), parsingBigEndian: &input)
+    let b = unsafe UInt32(_unchecked: (), parsingBigEndian: &input)
+    let c = unsafe UInt32(_unchecked: (), parsingBigEndian: &input)
+    let d = unsafe UInt32(_unchecked: (), parsingBigEndian: &input)
     return Int(a + b + c + d)
   }
 
