@@ -162,7 +162,7 @@ extension [UInt8]: ParserSpanProvider {
   public func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
-    let result = unsafe self.withUnsafeBytes { rawBuffer in
+    let result = self.withUnsafeBytes { rawBuffer in
       var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
       return Result<T, E> { () throws(E) in try body(&span) }
     }
@@ -177,7 +177,7 @@ extension ArraySlice<UInt8>: ParserSpanProvider {
   public func withParserSpan<T, E>(
     _ body: (inout ParserSpan) throws(E) -> T
   ) throws(E) -> T {
-    let result = unsafe self.withUnsafeBytes { rawBuffer in
+    let result = self.withUnsafeBytes { rawBuffer in
       var span = unsafe ParserSpan(_unsafeBytes: rawBuffer)
       return Result<T, E> { () throws(E) in try body(&span) }
     }

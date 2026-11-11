@@ -146,7 +146,7 @@ extension ParserSpan {
   public func withUnsafeBytes<T, E>(
     _ body: (UnsafeRawBufferPointer) throws(E) -> T
   ) throws(E) -> T {
-    try unsafe _bytes.withUnsafeBytes { (fullBuffer) throws(E) in
+    try _bytes.withUnsafeBytes { (fullBuffer) throws(E) in
       let buffer = unsafe UnsafeRawBufferPointer(
         rebasing: fullBuffer[_lowerBound..<_upperBound])
       return try unsafe body(buffer)
