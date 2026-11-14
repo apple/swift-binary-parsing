@@ -656,6 +656,58 @@ struct IntegerParsingTests {
     #expect(result == expected)
   }
 
+  // Padding bytes must sign-extend the parsed value: a non-negative value
+  // padded with `0xFF` bytes or a negative value padded with `0x00` bytes
+  // overflows the destination type.
+  @Test
+  func signedPaddingMustMatchSign() {
+    func runTest<T: FixedWidthInteger & SignedInteger & BitwiseCopyable>(
+      _: T.Type
+    ) {
+      let size = MemoryLayout<T>.size * 2
+      for number in [0, 1, T.max, -1, T.min] as [T] {
+        let wrongPadding: UInt8 = (number < 0) ? 0x00 : 0xff
+        let bePadded = [UInt8](
+          bigEndian: number, paddingTo: size, withPadding: wrongPadding)
+        #expect(throws: ParsingError.self) {
+          try bePadded.withParserSpan {
+            try T(parsingBigEndian: &$0, byteCount: size)
+          }
+        }
+        #expect(throws: ParsingError.self) {
+          try bePadded.withParserSpan {
+            try T(parsing: &$0, endianness: .big, byteCount: size)
+          }
+        }
+
+        let lePadded = [UInt8](
+          littleEndian: number, paddingTo: size, withPadding: wrongPadding)
+        #expect(throws: ParsingError.self) {
+          try lePadded.withParserSpan {
+            try T(parsingLittleEndian: &$0, byteCount: size)
+          }
+        }
+        #expect(throws: ParsingError.self) {
+          try lePadded.withParserSpan {
+            try T(parsing: &$0, endianness: .little, byteCount: size)
+          }
+        }
+      }
+    }
+
+    runTest(Int8.self)
+    runTest(Int16.self)
+    runTest(Int32.self)
+    runTest(Int64.self)
+    runTest(Int.self)
+
+    // 0xFF01 is -255 as a 16-bit integer, which doesn't fit in `Int8`.
+    let bytes: [UInt8] = [0xff, 0x01]
+    #expect(throws: ParsingError.self) {
+      try bytes.withParserSpan { try Int8(parsingBigEndian: &$0, byteCount: 2) }
+    }
+  }
+
   @Test
   func checkCountDoesNotOverflow() throws {
     try bigEndianOnes.withParserSpanIfAvailable { span in

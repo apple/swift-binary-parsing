@@ -164,22 +164,15 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
       byteExtension = try consumePadding(count: paddingCount)
     }
 
-    // 4) Check that byteExtension matches sign.
-    let isNegative = (result < 0)
-    let byteExtensionIsPositive =
-      switch byteExtension {
-      case nil, 0xff:
-        false
-      case 0:
-        true
-      default:
-        throw ParsingError(status: .invalidValue, location: input.startPosition)
+    // 4) Check that byteExtension matches sign: all zeroes for a non-negative
+    //    value, or all ones for a negative value.
+    if let byteExtension {
+      let expectedExtension: UInt8 = (result < 0) ? 0xff : 0x00
+      guard byteExtension == expectedExtension else {
+        throw ParsingError(
+          status: .invalidValue,
+          location: input.startPosition)
       }
-
-    if isNegative && byteExtensionIsPositive {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
     }
 
     self = result
