@@ -13,9 +13,7 @@ extension ParserSpan {
   @inlinable
   public func _checkCount(minimum: Int) throws(ParsingError) {
     guard count >= minimum else {
-      throw ParsingError(
-        status: .insufficientData,
-        location: startPosition)
+      try _throwInsufficientData(at: startPosition)
     }
   }
 }
@@ -24,9 +22,7 @@ extension FixedWidthInteger {
   @_alwaysEmitIntoClient
   init(_throwing other: some FixedWidthInteger) throws(ParsingError) {
     guard let newValue = Self(exactly: other) else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: 0)
+      try _throwInvalidValue(at: 0)
     }
     self = newValue
   }
@@ -140,8 +136,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
       let first = unsafe paddingBuffer.consumeUnchecked(type: UInt8.self)
       for _ in 1..<count {
         guard unsafe first == paddingBuffer.consumeUnchecked() else {
-          throw ParsingError(
-            status: .invalidValue, location: paddingBuffer.startPosition)
+          try _throwInvalidValue(at: paddingBuffer.startPosition)
         }
       }
       return first
@@ -173,13 +168,11 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
       case 0:
         true
       default:
-        throw ParsingError(status: .invalidValue, location: input.startPosition)
+        try _throwInvalidValue(at: input.startPosition)
       }
 
     if isNegative && byteExtensionIsPositive {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
 
     self = result
@@ -200,8 +193,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
       for _ in 0..<paddingCount {
         guard unsafe 0 == paddingBuffer.consumeUnchecked(type: UInt8.self)
         else {
-          throw ParsingError(
-            status: .invalidValue, location: paddingBuffer.startPosition)
+          try _throwInvalidValue(at: paddingBuffer.startPosition)
         }
       }
     }
@@ -258,9 +250,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     byteCount: Int
   ) throws(ParsingError) {
     guard byteCount > 0 else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     try input._checkCount(minimum: byteCount)
     unsafe try self.init(
@@ -356,9 +346,7 @@ extension SingleByteInteger {
   @inlinable
   public init(parsing input: inout ParserSpan) throws(ParsingError) {
     guard !input.isEmpty else {
-      throw ParsingError(
-        status: .insufficientData,
-        location: input.startPosition)
+      try _throwInsufficientData(at: input.startPosition)
     }
     unsafe self.init(_unchecked: (), parsing: &input)
   }
@@ -657,9 +645,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
     storedAs storageType: T.Type
   ) throws(ParsingError) {
     guard let result = input.consume() else {
-      throw ParsingError(
-        status: .insufficientData,
-        location: input.startPosition)
+      try _throwInsufficientData(at: input.startPosition)
     }
     self = try Self(_throwing: T(truncatingIfNeeded: result))
   }
@@ -689,16 +675,12 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
         let maxBytes = (Self.bitWidth + 6) / 7
         let byteCount = shift / 7 + 1
         if byteCount > maxBytes {
-          throw ParsingError(
-            status: .invalidValue,
-            location: input.startPosition)
+          try _throwInvalidValue(at: input.startPosition)
         }
         // Allow padding bytes that do not affect the value
         let expectedBits: UInt8 = (result < 0) ? 0x7F : 0x00
         guard lowBits == expectedBits else {
-          throw ParsingError(
-            status: .invalidValue,
-            location: input.startPosition)
+          try _throwInvalidValue(at: input.startPosition)
         }
       } else if availableBits < 7 {
         let allowedMask: UInt8 = (1 &<< availableBits) &- 1
@@ -706,14 +688,11 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
         if Self.isSigned {
           let signPadding: UInt8 = (~allowedMask) & 0x7F
           guard extraBits == signPadding || extraBits == 0 else {
-            throw ParsingError(
-              status: .invalidValue, location: input.startPosition)
+            try _throwInvalidValue(at: input.startPosition)
           }
         } else {
           guard extraBits == 0 else {
-            throw ParsingError(
-              status: .invalidValue,
-              location: input.startPosition)
+            try _throwInvalidValue(at: input.startPosition)
           }
         }
         let part = Self(lowBits & allowedMask) << shift
@@ -723,9 +702,7 @@ extension FixedWidthInteger where Self: BitwiseCopyable {
           let resultNegative = result & (1 << (Self.bitWidth - 1)) != 0
           if finalByteNegative != resultNegative {
             // The value's sign has flipped - it has wrapped around.
-            throw ParsingError(
-              status: .invalidValue,
-              location: input.startPosition)
+            try _throwInvalidValue(at: input.startPosition)
           }
         }
       } else {
@@ -771,9 +748,7 @@ extension RawRepresentable where RawValue: SingleByteInteger {
   public init(parsing input: inout ParserSpan) throws(ParsingError) {
     guard let value = try Self(rawValue: .init(_parsingBigEndian: &input))
     else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = value
   }
@@ -783,9 +758,7 @@ extension RawRepresentable where RawValue: FixedWidthInteger & BitwiseCopyable {
   @inlinable
   public init(_rawValueThrowing rawValue: RawValue) throws(ParsingError) {
     guard let value = Self(rawValue: rawValue) else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: 0)
+      try _throwInvalidValue(at: 0)
     }
     self = value
   }

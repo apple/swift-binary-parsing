@@ -16,7 +16,7 @@ extension Collection {
   public subscript(throwing i: Index) -> Element {
     get throws(ParsingError) {
       guard (startIndex..<endIndex).contains(i) else {
-        throw ParsingError(statusOnly: .invalidValue)
+        try _throwInvalidValue()
       }
       return self[i]
     }
@@ -28,7 +28,7 @@ extension Collection {
   public subscript(throwing bounds: Range<Index>) -> SubSequence {
     get throws(ParsingError) {
       guard bounds.lowerBound >= startIndex && bounds.upperBound <= endIndex
-      else { throw ParsingError(statusOnly: .invalidValue) }
+      else { try _throwInvalidValue() }
       return self[bounds]
     }
   }
@@ -45,7 +45,7 @@ extension Optional {
       switch self {
       case .some(let v): return v
       case .none:
-        throw ParsingError(statusOnly: .invalidValue)
+        try _throwInvalidValue()
       }
     }
   }
@@ -58,7 +58,7 @@ extension BinaryInteger {
   public init(throwingOnOverflow other: some BinaryInteger) throws(ParsingError)
   {
     guard let newValue = Self(exactly: other) else {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     self = newValue
   }
@@ -75,7 +75,7 @@ extension FixedWidthInteger {
   {
     let (result, overflow) = addingReportingOverflow(other)
     if overflow {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     return result
   }
@@ -88,7 +88,7 @@ extension FixedWidthInteger {
   {
     let (result, overflow) = subtractingReportingOverflow(other)
     if overflow {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     return result
   }
@@ -101,7 +101,7 @@ extension FixedWidthInteger {
   {
     let (result, overflow) = multipliedReportingOverflow(by: other)
     if overflow {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     return result
   }
@@ -114,7 +114,7 @@ extension FixedWidthInteger {
   {
     let (result, overflow) = dividedReportingOverflow(by: other)
     if overflow {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     return result
   }
@@ -127,7 +127,7 @@ extension FixedWidthInteger {
   {
     let (result, overflow) = remainderReportingOverflow(dividingBy: other)
     if overflow {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     return result
   }

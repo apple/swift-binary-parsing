@@ -32,9 +32,7 @@ extension Range where Bound: FixedWidthInteger {
     let start = try parser(&input)
     let count = try parser(&input)
     guard count >= 0, let end = start +? count else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe Range(uncheckedBounds: (start, end))
   }
@@ -59,9 +57,7 @@ extension Range where Bound: FixedWidthInteger {
     let start = try parser(&input)
     let count = try parser(&input)
     guard count >= 0, let end = start +? count else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe Range(uncheckedBounds: (start, end))
   }
@@ -81,9 +77,7 @@ extension ClosedRange where Bound: FixedWidthInteger {
     let start = try parser(&_input)
     let count = try parser(&_input)
     guard count > 0, let end = start +? count -? 1 else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: _input.startPosition)
+      try _throwInvalidValue(at: _input.startPosition)
     }
     self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
@@ -101,9 +95,7 @@ extension ClosedRange where Bound: FixedWidthInteger {
     let start = try parser(&_input)
     let count = try parser(&_input)
     guard count > 0, let end = start +? count -? 1 else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: _input.startPosition)
+      try _throwInvalidValue(at: _input.startPosition)
     }
     self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
@@ -132,9 +124,7 @@ extension Range {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe Range(uncheckedBounds: (start, end))
   }
@@ -159,9 +149,7 @@ extension Range {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe Range(uncheckedBounds: (start, end))
   }
@@ -188,9 +176,7 @@ extension ClosedRange {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }
@@ -215,9 +201,7 @@ extension ClosedRange {
     let start = try parser(&input)
     let end = try parser(&input)
     guard start <= end else {
-      throw ParsingError(
-        status: .invalidValue,
-        location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     self = unsafe ClosedRange(uncheckedBounds: (start, end))
   }

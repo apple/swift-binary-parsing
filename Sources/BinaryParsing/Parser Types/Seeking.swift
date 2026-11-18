@@ -171,7 +171,7 @@ extension ParserSpan {
     guard (0..._bytes.byteCount).contains(range.lowerBound),
       (0..._bytes.byteCount).contains(range.upperBound)
     else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     self._lowerBound = range.range.lowerBound
     self._upperBound = range.range.upperBound
@@ -215,7 +215,7 @@ extension ParserSpan {
     guard let offset = Int(exactly: offset),
       (0...count).contains(offset)
     else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     self._lowerBound += offset
   }
@@ -262,7 +262,7 @@ extension ParserSpan {
     guard let offset = Int(exactly: offset),
       (0..._bytes.byteCount).contains(offset)
     else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     self._lowerBound = offset
     self._upperBound = _bytes.byteCount
@@ -308,7 +308,7 @@ extension ParserSpan {
     guard let offset = Int(exactly: offset),
       (0...count).contains(offset)
     else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     self._lowerBound = endPosition &- offset
   }

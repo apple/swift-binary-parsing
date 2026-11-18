@@ -22,7 +22,7 @@ extension String {
         unsafe buffer.firstIndex(of: 0)
       })
     else {
-      throw ParsingError(status: .invalidValue, location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     try self.init(parsingUTF8: &input, count: nulOffset)
     _ = unsafe input.consumeUnchecked()
@@ -76,7 +76,7 @@ extension String {
   @inlinable
   public init(parsingUTF16 input: inout ParserSpan) throws(ParsingError) {
     guard input.count.isMultiple(of: 2) else {
-      throw ParsingError(status: .invalidValue, location: input.startPosition)
+      try _throwInvalidValue(at: input.startPosition)
     }
     unsafe try self.init(_uncheckedParsingUTF16: &input)
   }

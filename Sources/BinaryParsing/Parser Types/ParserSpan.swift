@@ -161,10 +161,10 @@ extension ParserSpan {
     atByteOffset count: some FixedWidthInteger
   ) throws(ParsingError) -> ParserSpan {
     guard let count = Int(exactly: count), count >= 0 else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     guard self.count >= count else {
-      throw ParsingError(status: .insufficientData, location: startPosition)
+      try _throwInsufficientData(at: startPosition)
     }
     return divide(atOffset: count)
   }

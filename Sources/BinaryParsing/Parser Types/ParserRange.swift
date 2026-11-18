@@ -56,7 +56,7 @@ extension RandomAccessCollection<UInt8> where Index == Int {
       guard validRange.contains(range.lowerBound),
         validRange.contains(range.upperBound)
       else {
-        throw ParsingError(status: .invalidValue, location: range.lowerBound)
+        try _throwInvalidValue(at: range.lowerBound)
       }
       return self[range.range]
     }
