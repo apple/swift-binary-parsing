@@ -116,21 +116,21 @@ let package = Package(
 if isSet("ENABLE_BENCHMARKING") {
   package.dependencies += [
     .package(
-      url: "https://github.com/ordo-one/package-benchmark",
-      .upToNextMajor(from: "1.4.0"))
+      url: "https://github.com/ordo-one/benchmark",
+      .upToNextMajor(from: "1.39.0"))
   ]
   package.targets += [
     .executableTarget(
       name: "ParsingBenchmarks",
       dependencies: [
-        .product(name: "Benchmark", package: "package-benchmark"),
+        .product(name: "Benchmark", package: "benchmark"),
         "BinaryParsing",
         "ParserTest",
         "TestData",
       ],
-      path: "Benchmarks",
+      path: "Benchmarks/ParsingBenchmarks",
       plugins: [
-        .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+        .plugin(name: "BenchmarkPlugin", package: "benchmark")
       ]
     )
   ]
