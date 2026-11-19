@@ -34,10 +34,10 @@ extension ParserSpan {
     throws(ParsingError) -> ParserSpan
   {
     guard let byteCount = Int(exactly: byteCount), byteCount >= 0 else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     guard count >= byteCount else {
-      throw ParsingError(status: .insufficientData, location: startPosition)
+      try _throwInsufficientData(at: startPosition)
     }
     return divide(atOffset: byteCount)
   }
@@ -72,7 +72,7 @@ extension ParserSpan {
       let byteCount = objectCount *? objectStride,
       byteCount >= 0
     else {
-      throw ParsingError(status: .invalidValue, location: startPosition)
+      try _throwInvalidValue(at: startPosition)
     }
     return try _divide(atByteOffset: byteCount)
   }
@@ -195,7 +195,7 @@ extension ParserSpan {
       let span = unsafe Span<UInt8>(_bytes: rawSpan)
       return try UTF8Span(validating: span)
     } catch {
-      throw ParsingError(status: .userError, location: startPosition)
+      try _throwUserError(at: startPosition)
     }
   }
 }

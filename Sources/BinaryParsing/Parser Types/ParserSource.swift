@@ -54,7 +54,7 @@ extension ExpressibleByParsing {
         try Self.init(parsing: &span)
       })
     else {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     self = result
   }

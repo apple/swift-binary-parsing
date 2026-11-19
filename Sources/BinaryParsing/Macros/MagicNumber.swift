@@ -17,8 +17,7 @@ public func _loadAndCheckDirectBytes<
 ) throws(ParsingError) {
   let loadedValue = try T(parsingBigEndian: &input)
   guard loadedValue == bigEndianValue else {
-    throw ParsingError(
-      status: .invalidValue, location: input.startPosition)
+    try _throwInvalidValue(at: input.startPosition)
   }
 }
 
@@ -34,8 +33,6 @@ public func _loadAndCheckDirectBytesByteOrder<
   } else if loadedValue.byteSwapped == bigEndianValue {
     return .little
   } else {
-    throw ParsingError(
-      status: .invalidValue,
-      location: input.startPosition)
+    try _throwInvalidValue(at: input.startPosition)
   }
 }

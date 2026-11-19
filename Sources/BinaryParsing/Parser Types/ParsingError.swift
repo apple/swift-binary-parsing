@@ -130,3 +130,41 @@ public typealias ThrownParsingError = any Error
 // Documentation is built using the non-embedded build.
 public typealias ThrownParsingError = ParsingError
 #endif
+
+// MARK: - Out-of-line failure paths
+
+// To keep parser functions inlinable, errors are thrown from these
+// non-inlinable helper functions. Building a `ParsingError` is heavy
+// enough to keep the optimizer from inlining small parsers
+// like `UInt16(parsingLittleEndian:)` or `seek(toRelativeOffset:)`.
+
+/// Throws an `insufficientData` error at `location`.
+@usableFromInline
+@inline(never)
+func _throwInsufficientData(at location: Int) throws(ParsingError) -> Never {
+  throw ParsingError(status: .insufficientData, location: location)
+}
+
+/// Throws an `invalidValue` error at `location`.
+@usableFromInline
+@inline(never)
+func _throwInvalidValue(at location: Int) throws(ParsingError) -> Never {
+  throw ParsingError(status: .invalidValue, location: location)
+}
+
+/// Throws a `userError` error at `location`, for a failure that
+/// came from outside the library (the cause is not kept).
+@usableFromInline
+@inline(never)
+func _throwUserError(at location: Int) throws(ParsingError) -> Never {
+  throw ParsingError(status: .userError, location: location)
+}
+
+/// Throws an `invalidValue` error with no location: for a
+/// failure that is not at a position in the input, like an arithmetic
+/// overflow.
+@usableFromInline
+@inline(never)
+func _throwInvalidValue() throws(ParsingError) -> Never {
+  throw ParsingError(statusOnly: .invalidValue)
+}

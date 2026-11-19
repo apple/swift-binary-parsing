@@ -78,7 +78,7 @@ extension Array {
     parser: (inout ParserSpan) throws -> Element
   ) throws {
     guard let count = Int(exactly: count), count >= 0 else {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     self = []
     self.reserveCapacity(count)
@@ -122,7 +122,7 @@ extension Array {
     parser: (inout ParserSpan) throws(ParsingError) -> Element
   ) throws(ParsingError) {
     guard count >= 0 else {
-      throw ParsingError(statusOnly: .invalidValue)
+      try _throwInvalidValue()
     }
     self = []
     self.reserveCapacity(count)
