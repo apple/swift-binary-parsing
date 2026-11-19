@@ -45,7 +45,7 @@ nonisolated(unsafe)
     Benchmark("PList") { benchmark, data in
       for _ in benchmark.scaledIterations {
         blackHole(data.count)
-        let plistData = try data.withByteBuffer { buffer in
+        let plistData = try data.withParserSpan { buffer in
           try BPList(parsing: &buffer)
         }
         blackHole(plistData.trailer.offsetTable.count)

@@ -87,3 +87,126 @@ jobs:
       api_breakage_check_container_image: swiftlang/swift:nightly-6.2-jammy
       docs_check_enabled: false  # nightly container has issues installing yq
       docs_check_container_image: swiftlang/swift:nightly-6.2-jammy
+
+  benchmark:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    container:
+      image: swift:6.3-jammy
+    defaults:
+      run:
+        shell: bash
+    env:
+      ENABLE_BENCHMARKING: 1
+      SWIFT_PACKAGE_FLAGS: --disable-experimental-prebuilts
+      BENCHMARK_TARGET: ParsingBenchmarks
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+      - name: Check out main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          path: main
+      - name: Check out base branch
+        if: ${{ github.event.pull_request.base.ref != 'main' }}
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - name: Record baselines
+        run: |
+          set -u
+          # `main` and the base branch may predate the benchmarks (or not build
+          # them); only the PR branch has to succeed.
+          for name in main base pr; do
+            [ -d "$name" ] || continue
+            echo "::group::Benchmarks: $name"
+            if ! (cd "$name" && swift package $SWIFT_PACKAGE_FLAGS \
+                --allow-writing-to-package-directory \
+                benchmark baseline update "$name" --no-progress); then
+              echo "::warning::The benchmarks did not run on '$name'."
+            fi
+            echo "::endgroup::"
+          done
+          if ! find pr/.benchmarkBaselines -name '*results.json' 2>/dev/null | grep -q .; then
+            echo "::error::The benchmarks produced no results on the PR branch."
+            exit 1
+          fi
+
+      - name: Compare baselines
+        working-directory: pr
+        run: |
+          set -u
+          for name in main base; do
+            if [ -d "../$name/.benchmarkBaselines" ]; then
+              cp -R "../$name/.benchmarkBaselines/." .benchmarkBaselines/
+            fi
+          done
+
+          summary="$PWD/benchmark-summary.md"
+          esc=$(printf '\033')
+          # Drop colors and the tool's notice about the package's identifier.
+          clean() {
+            sed -e "s/${esc}\[[0-9;]*m//g" \
+              -e '/Warning: this project depends/,/future release\./d'
+          }
+          has_results() {
+            find .benchmarkBaselines -path "*/$1/*" -name '*results.json' | grep -q .
+          }
+          tool() {
+            swift package $SWIFT_PACKAGE_FLAGS benchmark "$@" --no-progress --format markdown 2>/dev/null | clean
+          }
+
+          # report <baseline to compare against> <its branch name> <heading>
+          report() {
+            printf '## %s\n\n' "$3" >> "$summary"
+            if ! has_results "$1"; then
+              printf '❔ `%s` has no benchmark results to compare with.\n\n' "$2" >> "$summary"
+              return
+            fi
+            checked=$(tool baseline check "$1" pr || true)
+            case "$checked" in
+              *"is WORSE than"*)
+                printf '⚠️ **Some metrics are worse than on `%s`** (beyond tolerance).\n\n' "$2" >> "$summary"
+                echo "::warning title=Benchmarks::Some metrics are worse than on '$2'."
+                ;;
+              *"is BETTER than"*)
+                printf '🚀 **Some metrics are better than on `%s`** (beyond tolerance).\n\n' "$2" >> "$summary"
+                ;;
+              *)
+                printf '✅ **All metrics are within tolerance of `%s`.**\n\n' "$2" >> "$summary"
+                ;;
+            esac
+            printf '%s\n\n' "$checked" >> "$summary"
+            printf '<details><summary>Full comparison with <code>%s</code></summary>\n\n' "$2" >> "$summary"
+            tool baseline compare "$1" pr | sed -n '/^## Comparing/,$p' | sed 's/^#/##/' >> "$summary"
+            printf '\n</details>\n\n' >> "$summary"
+          }
+
+          printf '# Benchmarks: this PR vs `main`' > "$summary"
+          if [ "$BASE_REF" != main ]; then
+            printf ' and `%s`' "$BASE_REF" >> "$summary"
+          fi
+          printf '\n\n' >> "$summary"
+          report main main 'PR vs `main`'
+          if [ -d ../base ]; then
+            report base "$BASE_REF" "PR vs base branch \`$BASE_REF\`"
+          fi
+
+          cat "$summary" >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload benchmark results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-results
+          include-hidden-files: true  # `.benchmarkBaselines`
+          path: |
+            pr/.benchmarkBaselines
+            pr/benchmark-summary.md
